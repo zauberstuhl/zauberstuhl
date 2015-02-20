@@ -1,4 +1,6 @@
-@(title: String)
+@(title: String, stats: Map[String, play.api.libs.json.JsValue])
+
+@import play.api.libs.json._
 
 @header(title)
 
@@ -42,7 +44,7 @@
     Morris.Line({
       element: 'visitors',
       hideHover: 'auto',
-      data: AWSTATS,
+      data: @Html(Json.stringify(stats.getOrElse("awstats", null))),
       xkey: 'period',
       xLabels: 'month',
       ykeys: ['all', 'unique'],
@@ -55,9 +57,9 @@
       element: 'diaspora-stats',
       data: [{
         y: 'Diaspora* User',
-        a: DSTATS.total_users,
-        b: DSTATS.active_users_halfyear,
-        c: DSTATS.active_users_monthly
+        a: @((stats.getOrElse("diaspora", null) \ "total_users")),
+        b: @((stats.getOrElse("diaspora", null) \ "active_users_halfyear")),
+        c: @((stats.getOrElse("diaspora", null) \ "active_users_monthly"))
       }],
       xkey: 'y',
       ykeys: ['a', 'b', 'c'],
