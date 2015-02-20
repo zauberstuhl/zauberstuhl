@@ -1,0 +1,70 @@
+@(title: String)
+
+@header(title)
+
+<div class="container">
+  <div class="page-header">
+    <h1>@title</h1>
+  </div>
+</div>
+<div class="container">
+  <div id="monitor" class="panel panel-default tab-box">
+    <div class="panel-body">
+      <div class="tab-content">
+        <div id="fuel-tab" class="tab-pane active">
+          <div class="row">
+            <div class="col-sm-12 chart">
+              <div class="caption">
+                <span class="label label-default">Vistors/Monthly</span>
+              </div>
+              <div id="visitors"></div>
+              <div class="legend">
+                <span id="all" class="label">Overall</span>
+                <span id="unique" class="label">Unique</span>
+              </div>
+            </div>
+            <div class="col-sm-12 chart">
+              <div id="diaspora-stats"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="@routes.Assets.at("javascripts/autogen_stats.js")"></script>
+<script src="@routes.Assets.at("javascripts/jquery.min.js")"></script>
+<script src="@routes.Assets.at("javascripts/raphael-min.js")"></script>
+<script src="@routes.Assets.at("javascripts/morris.min.js")"></script>
+<script>
+  $(function () {
+    Morris.Line({
+      element: 'visitors',
+      hideHover: 'auto',
+      data: AWSTATS,
+      xkey: 'period',
+      xLabels: 'month',
+      ykeys: ['all', 'unique'],
+      postUnits: ' v/M',
+      labels: ['Overall', 'Unique'],
+      resize: true,
+      lineColors: ['#A52A2A','#72A0C1']
+    });
+    Morris.Bar({
+      element: 'diaspora-stats',
+      data: [{
+        y: 'Diaspora* User',
+        a: DSTATS.total_users,
+        b: DSTATS.active_users_halfyear,
+        c: DSTATS.active_users_monthly
+      }],
+      xkey: 'y',
+      ykeys: ['a', 'b', 'c'],
+      labels: ['Total user', 'Active half-yearly', 'Active monthly'],
+      barColors: ['#A52A2A','#000000','#72A0C1']
+    });
+  });
+</script>
+
+@footer()
