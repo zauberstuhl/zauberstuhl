@@ -11,11 +11,12 @@ object Application extends Controller {
   }
 
   def statistics = Action {
-    val url = Play.current.configuration.getString("diaspora.statisticUrl")
-    val localPath = Play.current.configuration.getString("awstats.dataPath")
+    val url = Play.current.configuration.getString("zauberstuhl.diaspora.url").get
+    val localPath = Play.current.configuration.getString("zauberstuhl.awstats.path").get
+    val expire = Play.current.configuration.getInt("zauberstuhl.cache.expire").get
 
     Ok(views.html.statistics(
       "Sechat* Statistics",
-      StatisticsHelper.get(url, localPath)))
+      StatisticsHelper.get(url, localPath, expire)))
   }
 }

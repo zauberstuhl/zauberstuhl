@@ -9,42 +9,41 @@ import scala.io.Source
 import scala.collection.mutable.ListBuffer
 // use caching for web requests and calculations
 import play.api.cache._
-import scala.concurrent.duration._
 import play.api.Play.current
 
 object StatisticsHelper {
-  def get(url: Option[String], localPath: Option[String]): Map[String, JsValue] =
-    Cache.getOrElse[Map[String, JsValue]]("zauberstuhl.statistics") {
-      println("No cache")
+  def get(url: String, localPath: String, expireCache: Int = 600): Map[String, JsValue] =
+    Cache.getOrElse[Map[String, JsValue]]("zauberstuhl.statistics", expireCache) {
       var awstats = ListBuffer[Map[String, String]]()
-      val response: HttpResponse[String] = Http(url.get).asString
+      val response: HttpResponse[String] = Http(url).asString
 
-      new File(localPath.get).listFiles.foreach { file =>
-        val date = """^.*\/awstats(\d{2})(\d{4}).txt$""".r
-        val entry = scala.collection.mutable.Map[String, String]()
-        file.getAbsolutePath match {
-          case date(month, year) => {
-            entry += ("period" -> s"$year-$month-00")
-            for (line <- Source.fromFile(file).getLines()) {
-              val total = """^TotalVisits\s(\d+).*""".r
-              val unique = """^TotalUnique\s(\d+).*""".r
-              line match {
-                case total(cnt) => entry += "all" -> cnt
-                case unique(cnt) => entry += "unique" -> cnt
-                case _ =>
+      try {
+        new File(localPath).listFiles.foreach { file =>
+          val date = """^.*\/awstats(\d{2})(\d{4}).txt$""".r
+          val entry = scala.collection.mutable.Map[String, String]()
+          file.getAbsolutePath match {
+            case date(month, year) => {
+              entry += ("period" -> s"$year-$month-00")
+              for (line <- Source.fromFile(file).getLines()) {
+                val total = """^TotalVisits\s(\d+).*""".r
+                val unique = """^TotalUnique\s(\d+).*""".r
+                line match {
+                  case total(cnt) => entry += "all" -> cnt
+                  case unique(cnt) => entry += "unique" -> cnt
+                  case _ =>
+                }
               }
             }
+            case _ =>
           }
-          case _ =>
+          if (entry.size == 3) awstats += entry.toMap
         }
-        if (entry.size == 3) awstats += entry.toMap
+      } catch {
+        case npe: NullPointerException => println(s"Directory does not exist: $localPath")
       }
-      val res = Map(
+      Map(
         "awstats" -> Json.toJson(awstats),
         "diaspora" -> Json.parse(response.body)
       )
-      // set duration for caching
-      Cache.set("zauberstuhl.statistics", res, 1.minutes)
-      res
     }
 }
