@@ -1,0 +1,13 @@
+@(title: String, message: String)
+
+@header(title)
+
+<div class="container">
+  <div class="page-header">
+    <h1>@title</h1>
+  </div>
+  <p class="lead">@message</p>
+  <img src="@routes.Assets.at("images/error.png")" border="0"/>
+</div>
+
+@footer()
