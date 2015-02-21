@@ -15,7 +15,9 @@ object StatisticsHelper {
   def get(url: String, localPath: String, expireCache: Int = 600): Map[String, JsValue] =
     Cache.getOrElse[Map[String, JsValue]]("zauberstuhl.statistics", expireCache) {
       var awstats = ListBuffer[Map[String, String]]()
-      val response: HttpResponse[String] = Http(url).asString
+      val response: HttpResponse[String] = Http(url)
+        .option(HttpOptions.allowUnsafeSSL)
+        .asString
 
       try {
         new File(localPath).listFiles.foreach { file =>
