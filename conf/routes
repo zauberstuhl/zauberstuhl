@@ -5,6 +5,7 @@
 # Home page
 GET     /                           controllers.Application.index
 GET     /statistics                 controllers.Application.statistics
+GET     /donate                     controllers.Application.donate
 POST    /ipn                        controllers.Application.ipn
 
 # Map static resources from the /public folder to the /assets URL path

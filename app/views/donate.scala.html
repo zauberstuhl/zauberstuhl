@@ -1,0 +1,44 @@
+@(title: String, expenditures: Map[String, java.lang.Double], transactions: Map[Int, Map[String, Any]])
+
+@import helpers._
+
+@header(title)
+
+<div class="container">
+  <div class="page-header">
+    <h1>Support the Network</h1>
+  </div>
+  <p>Keep <b>sechat.org</b> running fast and buy servers their coffee fix with a monthly donation! You can do that by using Paypal or Bitcoin.</p>
+  <p>Following money is required to keep stuff running:</p>
+  <ul>
+    @for((k, v) <- expenditures) {
+      <li>@k: @v.toString</li>
+    }
+  </ul>
+  <p>Payment methods:</p>
+  <div class="progress">
+  @defining(Global.getProgressWidth(expenditures, transactions)) { width =>
+    <div class="progress-bar progress-bar-success" style="width:@{width.toString}%">@{width.toString}%</div>
+  }
+  </div>
+</div>
+
+<div class="container">
+  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="Z8U4YDYDX3A72">
+    <input type="image" src="https://www.paypalobjects.com/en_US/DE/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+  </form>
+</div>
+
+<div class="container">
+  <div class="page-header">
+    <p class="lead">Latest donations:</p>
+  </div>
+  @for((k, v) <- transactions) {
+    <span class="label label-default">@v("donation").toString @v("currency")</span>
+  }
+</div>
+
+@footer()

@@ -11,6 +11,17 @@ import scala.concurrent._
 import ExecutionContext.Implicits.global
 
 object PayPalHelper {
+  def getTransactions: Map[Int, Map[String, Any]] = {
+    import play.api.Play.current
+    DB.withConnection { implicit c =>
+      SQL("SELECT ROWID, currency, gross, fee FROM PAYPAL;")().map(
+        row => row[Int]("ROWID") -> Map(
+          "donation" -> (row[Double]("gross") - row[Double]("fee")),
+          "currency" -> row[String]("currency"))
+      ).toMap
+    }
+  }
+
   def validateAndSaveTransaction(req: Request[AnyContent]) = future {
     if (isValidContent(req)) {
       import play.api.Play.current
@@ -50,6 +61,7 @@ object PayPalHelper {
       .header("Content-Length", s"${validateString.length}")
       .postData(validateString)
       .asString
+
     (result.isSuccess && result.body == "VERIFIED")
   }
 }
