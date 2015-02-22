@@ -20,6 +20,9 @@ Install simple build tool (sbt) and switch to the project directory, run:
 
     $ sbt clean compile stage
 
+Create sqlite database table:
+
+    $ sqlite3 database.db "CREATE TABLE PAYPAL (payer_id INT, first_name VARCHAR, last_name VARCHAR, email VARCHAR, gross FLOAT, fee FLOAT, currency VARCHAR);"
 
 Run the Application
 -------------------

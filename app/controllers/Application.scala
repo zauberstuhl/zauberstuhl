@@ -19,4 +19,9 @@ object Application extends Controller {
       "Sechat* Statistics",
       StatisticsHelper.get(url, localPath, expire)))
   }
+
+  def ipn = Action { request =>
+    PayPalHelper.validateAndSaveTransaction(request)
+    Ok
+  }
 }
