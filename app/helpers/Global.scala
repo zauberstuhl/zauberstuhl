@@ -10,16 +10,15 @@ object Global extends GlobalSettings {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
 
-  def getProgressWidth(expenditures: Map[String, java.lang.Double], transactions: Map[Int, Map[String, Any]]): Int = {
-    val expendituresCnt: Double = expenditures.foldLeft(0.0)(_+_._2)
-    val transactionCnt: Double = transactions.map {
-      case (_, b) => b.map {
-        case (k: String, v: Double) => v
-        case _ => 0.0 // return zero if something else
-      }
-    }.foldLeft(0.0)(_+_.head)
-    if (transactionCnt >= expendituresCnt) return 100
-    (transactionCnt / (expendituresCnt / 100.0)).toInt
+  def getProgressWidth(e: Map[String, java.lang.Double], t: List[(String, Float)]): Int = {
+    val btcc = Play.current.configuration.getInt("zauberstuhl.btc.conversion").getOrElse(1)
+    val ec: Double = e.foldLeft(0.0)(_+_._2)
+    var tc: Float = 0;
+    for ((k, v) <- t) {
+      if (k == "BTC") tc += v * btcc else v
+    }
+    if (tc.abs > ec.abs) return 100
+    (tc / (ec / 100.0)).toInt
   }
 
   override def onError(req: RequestHeader, ex: Throwable) = {

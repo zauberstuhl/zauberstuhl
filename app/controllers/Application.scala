@@ -8,14 +8,16 @@ import scala.collection.JavaConverters._
 import helpers._
 
 object Application extends Controller {
+  val c = Play.current.configuration
+
   def index = Action {
     Ok(views.html.index("Zauberstuhl Network"))
   }
 
   def statistics = Action {
-    val url = Play.current.configuration.getString("zauberstuhl.diaspora.url").get
-    val localPath = Play.current.configuration.getString("zauberstuhl.awstats.path").get
-    val expire = Play.current.configuration.getInt("zauberstuhl.cache.expire").get
+    val url = c.getString("zauberstuhl.diaspora.url").get
+    val localPath = c.getString("zauberstuhl.awstats.path").get
+    val expire = c.getInt("zauberstuhl.cache.expire").get
 
     Ok(views.html.statistics(
       "Sechat* Statistics",
@@ -23,22 +25,13 @@ object Application extends Controller {
   }
 
   def donate = Action {
-    val values = Play.current.configuration
-      .getDoubleList("zauberstuhl.expenditures.values")
+    val values = c.getDoubleList("zauberstuhl.expenditures.values")
       .getOrElse(null)
-    val reasons = Play.current.configuration
-      .getStringList("zauberstuhl.expenditures.reasons")
+    val reasons = c.getStringList("zauberstuhl.expenditures.reasons")
       .getOrElse(null)
-    val expenditures = (reasons.asScala zip values.asScala).toMap
-    val transactions = PayPalHelper.getTransactions
+    val e = (reasons.asScala zip values.asScala).toMap
+    val t = (new DonationHelper).getList
 
-    Ok(views.html.donate("Donate the Network",
-      expenditures, transactions
-    ))
-  }
-
-  def ipn = Action { request =>
-    PayPalHelper.validateAndSaveTransaction(request)
-    Ok
+    Ok(views.html.donate("Donate the Network", e, t))
   }
 }
