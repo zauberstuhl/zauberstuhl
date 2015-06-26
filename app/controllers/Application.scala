@@ -24,7 +24,7 @@ object Application extends Controller {
       StatisticsHelper.get(url, localPath, expire)))
   }
 
-  def donate = Action {
+  def donate(json: Boolean) = Action {
     val values = c.getDoubleList("zauberstuhl.expenditures.values")
       .getOrElse(null)
     val reasons = c.getStringList("zauberstuhl.expenditures.reasons")
@@ -32,6 +32,8 @@ object Application extends Controller {
     val e = (reasons.asScala zip values.asScala).toMap
     val t = (new DonationHelper).getList
 
-    Ok(views.html.donate("Donate the Network", e, t))
+    if (json) Ok(
+      Global.buildDonateJSON(e, t)
+    ) else Ok(views.html.donate("Donate the Network", e, t))
   }
 }

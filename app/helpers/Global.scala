@@ -6,6 +6,8 @@ import play.api.mvc.Results._
 import scala.concurrent.Future
 
 object Global extends GlobalSettings {
+  val maxWidth = 100
+
   def escapeHtml(s: String): String = s
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -17,9 +19,12 @@ object Global extends GlobalSettings {
     for ((k, v) <- t) {
       if (k == "BTC") tc += v * btcc else v
     }
-    if (tc.abs > ec.abs) return 100
-    (tc / (ec / 100.0)).toInt
+    if (tc.abs > ec.abs) return this.maxWidth
+    (tc / (ec / this.maxWidth)).toInt
   }
+
+  def buildDonateJSON(e: Map[String, java.lang.Double], t: List[(String, Float)]): String =
+    """{"maxWidth":"""+this.maxWidth+""","width":"""+this.getProgressWidth(e, t)+"""}"""
 
   override def onError(req: RequestHeader, ex: Throwable) = {
     Future.successful(InternalServerError(views.html.error(
