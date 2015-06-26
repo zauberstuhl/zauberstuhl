@@ -34,6 +34,6 @@ object Application extends Controller {
 
     if (json) Ok(
       Global.buildDonateJSON(e, t)
-    ) else Ok(views.html.donate("Donate the Network", e, t))
+    ) else Ok(views.html.donate("Support the Network", e, t))
   }
 }
