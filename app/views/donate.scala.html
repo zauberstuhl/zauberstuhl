@@ -23,10 +23,10 @@
   </div>
 </div>
 
-<div class="container">
+<div class="container" style="padding-bottom:10px">
   <form action="https://www.paypal.com/cgi-bin/webscr"
     method="post" target="_top"
-    style="margin:0 auto;width:174px">
+    style="margin:0 auto;width:126px">
     <input type="hidden" name="cmd" value="_s-xclick">
     <input type="hidden" name="hosted_button_id" value="Z8U4YDYDX3A72">
     <input type="image" src="https://www.paypalobjects.com/en_US/DE/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
@@ -34,8 +34,14 @@
   </form>
 </div>
 
-<div class="container">
-  <div style="font-size:16px;margin:0 auto;width:300px" class="blockchain-btn"
+<div class="container" style="padding-bottom:10px">
+  <div style="font-size:16px;margin:0 auto;width:55px">
+    <a class="FlattrButton" style="display:none;" href="https://sechat.org/stream"></a>
+  </div>
+</div>
+
+<div class="container" style="padding-bottom:10px">
+  <div style="font-size:16px;margin:0 auto;width:257px" class="blockchain-btn"
     data-address="1GCimNrGv6j7sN5xVXHxDvqiJZ8nmSFntS"
     data-shared="false">
     <div class="blockchain stage-begin">
@@ -67,5 +73,15 @@
 </div>
 
 <script src="@routes.Assets.at("javascripts/pay-now-button.js")"></script>
-
+<script type="text/javascript">
+  /* <![CDATA[ */
+  (function() {
+    var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+    s.type = 'text/javascript';
+    s.async = true;
+    s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+    t.parentNode.insertBefore(s, t);
+  })();
+  /* ]]> */
+</script>
 @footer()
