@@ -9,6 +9,7 @@ import javax.mail.internet._
 import javax.mail.search._
 import java.util.Properties
 
+import scala.util.matching.Regex
 import scala.collection.JavaConversions._
 
 class DonationHelper() {
@@ -66,13 +67,14 @@ class DonationHelper() {
         val text = this.getText(msg)
         val btc = "(\\d+\\.\\d+) (BTC)".r
         val pp = "(\\d+\\,\\d+) ([A-Z]{3})".r
+        val ftr = "You made (\\d+\\.\\d+) (\\w+) in (\\w+)".r
 
-        btc.findFirstMatchIn(text) foreach {
-          m => ms += ((m.group(2).toString, m.group(1).toFloat))
-        }
-        pp.findFirstMatchIn(text) foreach {
-          m => ms += ((m.group(2).toString, m.group(1).replace(",",".").toFloat))
-        }
+        btc.findFirstMatchIn(text) map { case Regex.Groups(a,c)
+          => ms += (this.convertPatternMatch(c,a)) }
+        pp.findFirstMatchIn(text) map { case Regex.Groups(a,c)
+          => ms += (this.convertPatternMatch(c,a)) }
+        ftr.findFirstMatchIn(msg.getSubject) map { case Regex.Groups(a,c,d)
+          => ms += (this.convertPatternMatch(c,a)) }
       }
       in.close(true)
       return ms.toList
@@ -86,11 +88,20 @@ class DonationHelper() {
     }
   }
 
+  private def convertPatternMatch(currency: String, amount: String): (String, Float) =
+    (currency
+      .toUpperCase()
+      .take(3)
+    ,amount
+      .replace("[^0-9,.]","")
+      .replace(",",".")
+      .toFloat)
+
   private def loadCredentials: (String, String, String, String) = {
     val c = Play.current.configuration
-    (c.getString("zauberstuhl.mail.imap").get,
-    c.getString("zauberstuhl.mail.address").get,
-    c.getString("zauberstuhl.mail.password").get,
-    c.getString("zauberstuhl.mail.box").get)
+    (c.getString("zauberstuhl.mail.imap").get
+    ,c.getString("zauberstuhl.mail.address").get
+    ,c.getString("zauberstuhl.mail.password").get
+    ,c.getString("zauberstuhl.mail.box").get)
   }
 }

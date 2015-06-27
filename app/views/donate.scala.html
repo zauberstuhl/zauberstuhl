@@ -9,18 +9,18 @@
     <h1>Support the Network</h1>
   </div>
   <p>Keep <b>sechat.org</b> running fast and buy servers their coffee fix with a monthly donation!<br/>
-  You can do that by using Paypal or Bitcoin. Following money is required to keep stuff running:</p>
+  You can do that by using Paypal, Flattr or Bitcoin. Following money is required to keep stuff running:</p>
   <ul>
     @for((k, v) <- expenditures) {
       <li>@k: @v.toString</li>
     }
   </ul>
-  <p>Payment methods:</p>
   <div class="progress">
   @defining(Global.getProgressWidth(expenditures, transactions)) { width =>
     <div class="progress-bar progress-bar-success" style="width:@{width.toString}%">@{width.toString}%</div>
   }
   </div>
+  <p>Payment methods:</p>
 </div>
 
 <div class="container" style="padding-bottom:10px">
