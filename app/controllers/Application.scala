@@ -16,12 +16,11 @@ object Application extends Controller {
 
   def statistics = Action {
     val url = c.getString("zauberstuhl.diaspora.url").get
-    val localPath = c.getString("zauberstuhl.awstats.path").get
     val expire = c.getInt("zauberstuhl.cache.expire").get
 
     Ok(views.html.statistics(
       "Sechat* Statistics",
-      StatisticsHelper.get(url, localPath, expire)))
+      StatisticsHelper.get(url, expire)))
   }
 
   def donate(json: Boolean) = Action {

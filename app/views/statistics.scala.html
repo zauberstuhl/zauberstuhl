@@ -1,4 +1,4 @@
-@(title: String, stats: Map[String, play.api.libs.json.JsValue])
+@(title: String, stats: play.api.libs.json.JsValue)
 
 @import play.api.libs.json._
 
@@ -16,16 +16,6 @@
         <div id="fuel-tab" class="tab-pane active">
           <div class="row">
             <div class="col-sm-12 chart">
-              <div class="caption">
-                <span class="label label-default">Vistors/Monthly</span>
-              </div>
-              <div id="visitors"></div>
-              <div class="legend">
-                <span id="all" class="label">Overall</span>
-                <span id="unique" class="label">Unique</span>
-              </div>
-            </div>
-            <div class="col-sm-12 chart">
               <div id="diaspora-stats"></div>
             </div>
           </div>
@@ -40,25 +30,13 @@
 <script src="@routes.Assets.at("javascripts/morris.min.js")"></script>
 <script>
   $(function () {
-    Morris.Line({
-      element: 'visitors',
-      hideHover: 'auto',
-      data: @Html(Json.stringify(stats.getOrElse("awstats", null))),
-      xkey: 'period',
-      xLabels: 'month',
-      ykeys: ['all', 'unique'],
-      postUnits: ' v/M',
-      labels: ['Overall', 'Unique'],
-      resize: true,
-      lineColors: ['#A52A2A','#72A0C1']
-    });
     Morris.Bar({
       element: 'diaspora-stats',
       data: [{
         y: 'Diaspora* User',
-        a: @((stats.getOrElse("diaspora", null) \ "total_users")),
-        b: @((stats.getOrElse("diaspora", null) \ "active_users_halfyear")),
-        c: @((stats.getOrElse("diaspora", null) \ "active_users_monthly"))
+        a: @((stats \ "total_users")),
+        b: @((stats \ "active_users_halfyear")),
+        c: @((stats \ "active_users_monthly"))
       }],
       xkey: 'y',
       ykeys: ['a', 'b', 'c'],
