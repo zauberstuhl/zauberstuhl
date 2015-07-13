@@ -9,7 +9,7 @@
     <h1>Support the Network</h1>
   </div>
   <p>Keep <b>sechat.org</b> running fast and buy servers their coffee fix with a monthly donation!<br/>
-  You can do that by using Paypal, Flattr or Bitcoin. Following money is required to keep stuff running:</p>
+  You can do that by using Paypal, Flattr, Bountysource or Bitcoin. Following money is required to keep stuff running:</p>
   <ul>
     @for((k, v) <- expenditures) {
       <li>@k: @v.toString</li>
@@ -23,42 +23,53 @@
   <p>Payment methods:</p>
 </div>
 
-<div class="container" style="padding-bottom:10px">
-  <form action="https://www.paypal.com/cgi-bin/webscr"
-    method="post" target="_top"
-    style="margin:0 auto;width:126px">
-    <input type="hidden" name="cmd" value="_s-xclick">
-    <input type="hidden" name="hosted_button_id" value="Z8U4YDYDX3A72">
-    <input type="image" src="https://www.paypalobjects.com/en_US/DE/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-  </form>
-</div>
-
-<div class="container" style="padding-bottom:10px">
-  <div style="font-size:16px;margin:0 auto;width:55px">
-    <a class="FlattrButton" style="display:none;" href="https://sechat.org/stream"></a>
+<div class="container">
+  <div class="row row-centered">
+    <div class="col-centered col-fixed">
+      <form action="https://www.paypal.com/cgi-bin/webscr"
+        method="post" target="_blank">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="hosted_button_id" value="Z8U4YDYDX3A72">
+        <input type="image" src="https://www.paypalobjects.com/en_US/DE/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+      </form>
+    </div>
   </div>
-</div>
-
-<div class="container" style="padding-bottom:10px">
-  <div style="font-size:16px;margin:0 auto;width:257px" class="blockchain-btn"
-    data-address="1GCimNrGv6j7sN5xVXHxDvqiJZ8nmSFntS"
-    data-shared="false">
-    <div class="blockchain stage-begin">
-      <img src="https://blockchain.info/Resources/buttons/donate_64.png"/>
+  <div class="row row-centered">
+    <div class="col-centered col-fixed">
+      <a class="FlattrButton" style="display:none;" href="https://sechat.org/stream"></a>
     </div>
-    <div class="blockchain stage-loading" style="text-align:center">
-      <img src="https://blockchain.info/Resources/loading-large.gif"/>
+  </div>
+  <div class="row row-centered">
+    <div class="col-centered col-fixed">
+      <div style="font-size:16px" class="blockchain-btn"
+        data-address="1GCimNrGv6j7sN5xVXHxDvqiJZ8nmSFntS"
+        data-shared="false">
+        <div class="blockchain stage-begin">
+          <img src="https://blockchain.info/Resources/buttons/donate_64.png"/>
+        </div>
+        <div class="blockchain stage-loading" style="text-align:center">
+          <img src="https://blockchain.info/Resources/loading-large.gif"/>
+        </div>
+        <div class="blockchain stage-ready">
+          <p align="center">Please Donate To Bitcoin Address: <b>[[address]]</b></p>
+          <p align="center" class="qr-code"></p>
+        </div>
+        <div class="blockchain stage-paid">
+          Donation of <b>[[value]] BTC</b> Received. Thank You.
+        </div>
+        <div class="blockchain stage-error">
+          <font color="red">[[error]]</font>
+        </div>
+      </div>
     </div>
-    <div class="blockchain stage-ready">
-      <p align="center">Please Donate To Bitcoin Address: <b>[[address]]</b></p>
-      <p align="center" class="qr-code"></p>
-    </div>
-    <div class="blockchain stage-paid">
-      Donation of <b>[[value]] BTC</b> Received. Thank You.
-    </div>
-    <div class="blockchain stage-error">
-      <font color="red">[[error]]</font>
+  </div>
+  <div class="row row-centered">
+    <div class="col-centered col-fixed" style="text-align:center">
+      <a href="https://www.bountysource.com/teams/sechat" target="_blank">
+        <img width="100px" src="@routes.Assets.at("images/bountysource_logo.jpg")" border="0"/><br/>
+        <img src="https://api.bountysource.com/badge/team?team_id=45006&style=raised" border="0"/>
+      </a>
     </div>
   </div>
 </div>
