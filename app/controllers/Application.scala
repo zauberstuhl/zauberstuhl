@@ -11,7 +11,7 @@ object Application extends Controller {
   val c = Play.current.configuration
 
   def index = Action {
-    Ok(views.html.index("Zauberstuhl Network"))
+    Ok(views.html.index("Welcome"))
   }
 
   def statistics = Action {
@@ -19,7 +19,7 @@ object Application extends Controller {
     val expire = c.getInt("zauberstuhl.cache.expire").get
 
     Ok(views.html.statistics(
-      "Sechat* Statistics",
+      "Statistics",
       StatisticsHelper.get(url, expire)))
   }
 
@@ -33,6 +33,6 @@ object Application extends Controller {
 
     if (json) Ok(
       Global.buildDonateJSON(e, t)
-    ) else Ok(views.html.donate("Support the Network", e, t))
+    ) else Ok(views.html.donate("Donate", e, t))
   }
 }
