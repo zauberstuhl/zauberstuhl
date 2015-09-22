@@ -17,7 +17,7 @@ object Global extends GlobalSettings {
     val ec: Double = e.foldLeft(0.0)(_+_._2)
     var tc: Float = 0;
     for ((k, v) <- t) {
-      if (k == "BTC") tc += v * btcc else v
+      if (k == "BTC") tc += v * btcc else tc += v
     }
     if (tc.abs > ec.abs) return this.maxWidth
     (tc / (ec / this.maxWidth)).toInt
