@@ -8,6 +8,8 @@ import javax.mail._
 import javax.mail.internet._
 import javax.mail.search._
 import java.util.Properties
+import java.util.Date;
+import java.util.Calendar;
 
 import scala.util.matching.Regex
 import scala.collection.JavaConversions._
@@ -64,17 +66,19 @@ class DonationHelper() {
       in.open(Folder.READ_ONLY)
       val msgs = in.getMessages()
       for (msg <- msgs) {
-        val text = this.getText(msg)
-        val btc = "(\\d+\\.\\d+) (BTC)".r
-        val pp = "(\\d+\\,\\d+) ([A-Z]{3})".r
-        val ftr = "You made (\\d+\\.\\d+) (\\w+) in (\\w+)".r
+        if (this.dateNotExpired(msg.getReceivedDate())) {
+          val text = this.getText(msg)
+          val btc = "(\\d+\\.\\d+) (BTC)".r
+          val pp = "(\\d+\\,\\d+) ([A-Z]{3})".r
+          val ftr = "You made (\\d+\\.\\d+) (\\w+) in (\\w+)".r
 
-        btc.findFirstMatchIn(text) map { case Regex.Groups(a,c)
-          => ms += (this.convertPatternMatch(c,a)) }
-        pp.findFirstMatchIn(text) map { case Regex.Groups(a,c)
-          => ms += (this.convertPatternMatch(c,a)) }
-        ftr.findFirstMatchIn(msg.getSubject) map { case Regex.Groups(a,c,d)
-          => ms += (this.convertPatternMatch(c,a)) }
+          btc.findFirstMatchIn(text) map { case Regex.Groups(a,c)
+            => ms += (this.convertPatternMatch(c,a)) }
+          pp.findFirstMatchIn(text) map { case Regex.Groups(a,c)
+            => ms += (this.convertPatternMatch(c,a)) }
+          ftr.findFirstMatchIn(msg.getSubject) map { case Regex.Groups(a,c,d)
+            => ms += (this.convertPatternMatch(c,a)) }
+        } else println(msg.getReceivedDate() + " > too old.. skipping!")
       }
       in.close(true)
       return ms.toList
@@ -103,5 +107,11 @@ class DonationHelper() {
     ,c.getString("zauberstuhl.mail.address").get
     ,c.getString("zauberstuhl.mail.password").get
     ,c.getString("zauberstuhl.mail.box").get)
+  }
+
+  private def dateNotExpired(d1: Date): Boolean = {
+    val d2 = Calendar.getInstance()
+    d2.add(Calendar.YEAR, -1)
+    (d1.compareTo(d2.getTime()) >= 0)
   }
 }
