@@ -18,9 +18,8 @@ object Application extends Controller {
     val url = c.getString("zauberstuhl.diaspora.url").get
     val expire = c.getInt("zauberstuhl.cache.expire").get
 
-    Ok(views.html.statistics(
-      "Statistics",
-      StatisticsHelper.get(url, expire)))
+    Ok(views.html.statistics("Statistics",
+      StatisticsHelper.get(url, "zauberstuhl.statistics", expire)))
   }
 
   def donate(json: Boolean) = Action {
