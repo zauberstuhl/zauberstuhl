@@ -81,7 +81,8 @@ class DonationHelper() {
         } else println(msg.getReceivedDate() + " > too old.. skipping!")
       }
       in.close(true)
-      return ms.toList
+      // reverse and move latest dontaion to the top
+      return ms.reverse.toList
     } catch {
       case e: Throwable => {
         println("Something went wrong in the MailHelper: " + e.getMessage())
