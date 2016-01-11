@@ -11,7 +11,7 @@ object Application extends Controller {
   val c = Play.current.configuration
 
   def index = Action {
-    Ok(views.html.index("Welcome"))
+    Ok(views.html.index("Contact"))
   }
 
   def statistics = Action {
