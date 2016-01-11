@@ -8,7 +8,7 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
   /* Margin bottom by header height */
-  margin-top: 100px;
+  margin-top: 51px;
 }
 .footer {
   position: absolute;
@@ -25,9 +25,9 @@ body {
 /* Not required for template or sticky footer method. */
 
 pre {
-	overflow: auto;
-	word-wrap: normal;
-	white-space: pre;
+  overflow: auto;
+  word-wrap: normal;
+  white-space: pre;
 }
 
 .container {
