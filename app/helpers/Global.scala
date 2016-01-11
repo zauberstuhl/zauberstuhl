@@ -13,7 +13,18 @@ object Global extends GlobalSettings {
     .replaceAll(">", "&gt;")
 
   def getProgressWidth(e: Map[String, java.lang.Double], t: List[(String, Float)]): Int = {
-    val btcc = Play.current.configuration.getInt("zauberstuhl.btc.conversion").getOrElse(1)
+    var btcc: Int = 220;
+    val c = Play.current.configuration
+    val conv = StatisticsHelper.get(
+      c.getString("zauberstuhl.btc.url").get,
+      "zauberstuhl.btc.conversion")
+    try {
+      btcc = (conv \ "EUR" \ "last").as[Int]
+    } catch {
+      case _ : Throwable =>
+        println("Wasn't able to parse BTC conversion. Using default value " + btcc)
+    }
+
     val ec: Double = e.foldLeft(0.0)(_+_._2)
     var tc: Float = 0;
     for ((k, v) <- t) {

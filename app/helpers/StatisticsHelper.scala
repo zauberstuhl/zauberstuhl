@@ -8,11 +8,15 @@ import play.api.cache._
 import play.api.Play.current
 
 object StatisticsHelper {
-  def get(url: String, expireCache: Int = 600): JsValue =
-    Cache.getOrElse[JsValue]("zauberstuhl.statistics", expireCache) {
-      val response: HttpResponse[String] = Http(url)
-        //.option(HttpOptions.allowUnsafeSSL)
-        .asString
-      Json.parse(response.body)
+  def get(url: String, cacheTag: String, expireCache: Int = 600): JsValue =
+    Cache.getOrElse[JsValue](cacheTag, expireCache) {
+      try {
+        val response: HttpResponse[String] = Http(url).asString
+        Json.parse(response.body)
+      } catch {
+        case _ : Throwable =>
+          println("ERROR! Wasn't able to fetch data from " + url)
+          Json.parse("{}")
+      }
     }
 }
