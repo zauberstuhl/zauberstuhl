@@ -5,6 +5,8 @@ import play.api.mvc._
 
 import scala.collection.JavaConverters._
 
+import java.util.Calendar
+
 import helpers._
 
 object Application extends Controller {
@@ -27,11 +29,13 @@ object Application extends Controller {
       .getOrElse(null)
     val reasons = c.getStringList("zauberstuhl.expenditures.reasons")
       .getOrElse(null)
-    val e = (reasons.asScala zip values.asScala).toMap
-    val t = (new DonationHelper).getList
+    val donationReasons = (reasons.asScala zip values.asScala).toMap
+    val donations = (new DonationHelper).getList
+
+    val title = "Donations for " + Calendar.getInstance().get(Calendar.YEAR)
 
     if (json) Ok(
-      Global.buildDonateJSON(e, t)
-    ) else Ok(views.html.donate("Donate", e, t))
+      Global.buildDonateJSON(donationReasons, donations)
+    ) else Ok(views.html.donate(title, donationReasons, donations))
   }
 }
