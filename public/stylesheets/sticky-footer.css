@@ -24,6 +24,10 @@ body {
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
 
+p {
+  margin: 0;
+}
+
 pre {
   overflow: auto;
   word-wrap: normal;
