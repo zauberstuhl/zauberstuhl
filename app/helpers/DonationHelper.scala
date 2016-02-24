@@ -8,8 +8,8 @@ import javax.mail._
 import javax.mail.internet._
 import javax.mail.search._
 import java.util.Properties
-import java.util.Date;
-import java.util.Calendar;
+import java.util.Date
+import java.util.Calendar
 
 import scala.util.matching.Regex
 import scala.collection.JavaConversions._
@@ -110,9 +110,12 @@ class DonationHelper() {
     ,c.getString("zauberstuhl.mail.box").get)
   }
 
-  private def dateNotExpired(d1: Date): Boolean = {
-    val d2 = Calendar.getInstance()
-    d2.add(Calendar.YEAR, -1)
-    (d1.compareTo(d2.getTime()) >= 0)
+  private def dateNotExpired(date: Date): Boolean = {
+    val donationDate = Calendar.getInstance()
+    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+    donationDate.setTime(date)
+    val donationYear = donationDate.get(Calendar.YEAR)
+
+    (donationYear.compareTo(currentYear) == 0)
   }
 }
