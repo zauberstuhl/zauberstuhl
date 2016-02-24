@@ -4,6 +4,8 @@
 
 @header(title)
 
+<script src="@routes.Assets.at("javascripts/bitcoinate-0.2.1.js")"></script>
+
 <div class="container">
   <p>Keep stuff running fast and buy servers their coffee fix with a monthly donation!<br/>
   You can do that by using Paypal, Flattr, Bountysource or Bitcoin.</p>
@@ -39,26 +41,7 @@
   </div>
   <div class="row row-centered">
     <div class="col-centered col-fixed">
-      <div style="font-size:16px" class="blockchain-btn"
-        data-address="1GCimNrGv6j7sN5xVXHxDvqiJZ8nmSFntS"
-        data-shared="false">
-        <div class="blockchain stage-begin">
-          <img src="https://blockchain.info/Resources/buttons/donate_64.png"/>
-        </div>
-        <div class="blockchain stage-loading" style="text-align:center">
-          <img src="https://blockchain.info/Resources/loading-large.gif"/>
-        </div>
-        <div class="blockchain stage-ready">
-          <p align="center">Please Donate To Bitcoin Address: <b>[[address]]</b></p>
-          <p align="center" class="qr-code"></p>
-        </div>
-        <div class="blockchain stage-paid">
-          Donation of <b>[[value]] BTC</b> Received. Thank You.
-        </div>
-        <div class="blockchain stage-error">
-          <font color="red">[[error]]</font>
-        </div>
-      </div>
+      <button class="bitcoinate" data-size="30" data-address="1GCimNrGv6j7sN5xVXHxDvqiJZ8nmSFntS"><span></span>Donate BTC</button>
     </div>
   </div>
   <div class="row row-centered">
@@ -91,7 +74,6 @@
   }
 </div>
 
-<script src="@routes.Assets.at("javascripts/pay-now-button.js")"></script>
 <script type="text/javascript">
   /* <![CDATA[ */
   (function() {
