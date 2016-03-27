@@ -28,10 +28,16 @@
     Morris.Bar({
       element: 'diaspora-stats',
       data: [{
-        y: 'Diaspora* User',
-        a: @((stats \ "total_users")),
-        b: @((stats \ "active_users_halfyear")),
-        c: @((stats \ "active_users_monthly"))
+        y: 'Sechat.org',
+        a: @((stats \ "sechat" \ "total_users")),
+        b: @((stats \ "sechat" \ "active_users_halfyear")),
+        c: @((stats \ "sechat" \ "active_users_monthly"))
+      },
+      {
+        y: 'Joindiaspora.com',
+        a: @((stats \ "joindiaspora" \ "total_users")),
+        b: @((stats \ "joindiaspora" \ "active_users_halfyear")),
+        c: @((stats \ "joindiaspora" \ "active_users_monthly"))
       }],
       xkey: 'y',
       ykeys: ['a', 'b', 'c'],

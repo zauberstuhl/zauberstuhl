@@ -2,6 +2,7 @@ package controllers
 
 import play.api._
 import play.api.mvc._
+import play.api.libs.json._
 
 import scala.collection.JavaConverters._
 
@@ -17,11 +18,17 @@ object Application extends Controller {
   }
 
   def statistics = Action {
-    val url = c.getString("zauberstuhl.diaspora.url").get
+    val sechat_key = "zauberstuhl.stats.sechat"
+    val jd_key = "zauberstuhl.stats.joindiaspora"
+    val sechat_url = c.getString(sechat_key).get
+    val jd_url = c.getString(jd_key).get
     val expire = c.getInt("zauberstuhl.cache.expire").get
 
+    val sechat_json = StatisticsHelper.get(sechat_url, sechat_key, expire)
+    val joindiaspora_json = StatisticsHelper.get(jd_url, jd_key, expire)
+
     Ok(views.html.statistics("Statistics",
-      StatisticsHelper.get(url, "zauberstuhl.statistics", expire)))
+      Json.obj( "sechat" -> sechat_json, "joindiaspora" -> joindiaspora_json)))
   }
 
   def donate(json: Boolean) = Action {

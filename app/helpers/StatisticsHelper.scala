@@ -11,7 +11,10 @@ object StatisticsHelper {
   def get(url: String, cacheTag: String, expireCache: Int = 600): JsValue =
     Cache.getOrElse[JsValue](cacheTag, expireCache) {
       try {
-        val response: HttpResponse[String] = Http(url).asString
+        val response: HttpResponse[String] = Http(url)
+          .timeout(connTimeoutMs = 5000, readTimeoutMs = 15000)
+          .asString
+
         Json.parse(response.body)
       } catch {
         case _ : Throwable =>
