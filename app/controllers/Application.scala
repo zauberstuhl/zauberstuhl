@@ -46,18 +46,20 @@ object Application extends Controller {
   }
 
   def donate(json: Boolean) = Action {
-    val values = Utils.confd.getDoubleList("zauberstuhl.expenditures.values")
-      .getOrElse(null)
-    val reasons = Utils.confd.getStringList("zauberstuhl.expenditures.reasons")
-      .getOrElse(null)
+    val values = Utils.confd.getDoubleList(
+      "zauberstuhl.expenditures.values").get
+    val reasons = Utils.confd.getStringList(
+      "zauberstuhl.expenditures.reasons").get
 
     val donationReasons = (reasons.asScala zip values.asScala).toMap
     val donations: List[Donation] = DatabaseHelper.selectAllFromThisYear
 
     val title = "Donations for " + Calendar.getInstance().get(Calendar.YEAR)
 
-    if (json) Ok(
-      Utils.buildDonateJSON(donationReasons, donations)
-    ) else Ok(views.html.donate(title, donationReasons, donations))
+    if (json) {
+      Ok(Utils.buildDonateJSON(donationReasons, donations))
+    } else {
+      Ok(views.html.donate(title, donationReasons, donations))
+    }
   }
 }

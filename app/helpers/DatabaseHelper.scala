@@ -73,7 +73,7 @@ object DatabaseHelper {
   def lastEntry(p: Provider): Option[Donation] = DB.withConnection { implicit c =>
     SQL("""select received, currency, provider, time
       from donations
-      where provider like '"""+p.name+"""'
+      where provider like '""" + p.name + """'
       order by time DESC
       limit 1;""")
     .as(donations *)

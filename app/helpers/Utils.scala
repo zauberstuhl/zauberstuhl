@@ -16,22 +16,16 @@
 //
 package helpers
 
-import play.api._
-import play.api.libs.json._
+import play.api.{Play, Logger}
+import play.api.libs.json.{JsValue, Json}
 import play.api.cache._
 import play.api.Play.current
 
+import javax.mail.{Part, Multipart}
+import scala.util.matching.Regex
 import scalaj.http._
 
-// EmailProvider
-import javax.mail._
-import javax.mail.internet._
-import javax.mail.search._
-import java.util.Properties
-import java.util.Date
-import java.util.Calendar
-
-import scala.util.matching.Regex
+import util.control.Breaks
 
 trait Provider {
   def name: String =
@@ -50,7 +44,7 @@ object Utils {
   val BlockChainParam = "?filter=2&format=json" // 1 = sent; 2 = received
 
   def buildDonateJSON(reasons: Map[String, java.lang.Double], donations: List[Donation]): String =
-    """{"maxWidth":"""+MaxWidth+""","width":"""+this.getProgressWidth(reasons, donations)+"""}"""
+    """{"maxWidth":""" + MaxWidth + ""","width":""" + this.getProgressWidth(reasons, donations) + """}"""
 
   def escapeHtml(s: String): String = s
     .replaceAll("<", "&lt;")
@@ -68,7 +62,7 @@ object Utils {
   }
 
   def getProgressWidth(reasons: Map[String, java.lang.Double], donations: List[Donation]): Int = {
-    val reasonSum: Double = reasons.foldLeft(0.0)(_+_._2)
+    val reasonSum: Double = reasons.foldLeft(0.0)(_ + _._2)
     val donationSum: Double = donations.foldLeft(0.0) {
       (a: Double, b: Donation) => (b.received + a)
     }
@@ -86,33 +80,46 @@ object Utils {
     }
   }
 
-  def partText(p: Part): String = {
+  def partText(p: Part): Option[String] = {
+    val Outer = new Breaks
+    var res: Option[String] = None
     if (p.isMimeType("text/*")) {
-      return p.getContent.asInstanceOf[String]
-    }
-    if (p.isMimeType("multipart/alternative")) {
+      Option(p.getContent.asInstanceOf[String])
+    } else if (p.isMimeType("multipart/alternative")) {
       val mp = p.getContent.asInstanceOf[Multipart]
-      var text: String = null
-      for (i <- 0 until mp.getCount) {
-        val bp = mp.getBodyPart(i)
-        if (bp.isMimeType("text/plain")) {
-          if (text == null) text = partText(bp)
-        } else if (bp.isMimeType("text/html")) {
-          val s = partText(bp)
-          if (s != null) return s
-        } else {
-          return partText(bp)
+      Outer.breakable {
+        for (i <- 0 until mp.getCount) {
+          val bp = mp.getBodyPart(i)
+          if (bp.isMimeType("text/plain") && res == None) {
+            res = partText(bp)
+            Outer.break
+          } else if (bp.isMimeType("text/html")) {
+            partText(bp) match {
+              case Some(plain) =>
+                res = Option(plain)
+                Outer.break
+              case None => //
+            }
+          } else {
+            res = partText(bp)
+            Outer.break
+          }
         }
       }
-      return text
     } else if (p.isMimeType("multipart/*")) {
       val mp = p.getContent.asInstanceOf[Multipart]
-      for (i <- 0 until mp.getCount) {
-        val s = partText(mp.getBodyPart(i))
-        if (s != null) return s
+      Outer.breakable {
+        for (i <- 0 until mp.getCount) {
+          partText(mp.getBodyPart(i)) match {
+            case Some(plain) =>
+              res = Option(plain)
+              Outer.break
+            case None => //
+          }
+        }
       }
     }
-    null
+    res
   }
 
   def convertCurrencyAmount(currency: String, amount: String): (String, Float) =
