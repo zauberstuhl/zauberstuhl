@@ -1,3 +1,19 @@
+// Webside Source Code Zauberstuhl.de
+// Copyright (C) 2016  Lukas Matt <lukas@zauberstuhl.de>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
 package controllers
 
 import play.api._
@@ -11,8 +27,6 @@ import java.util.Calendar
 import helpers._
 
 object Application extends Controller {
-  val c = Play.current.configuration
-
   def index = Action {
     Ok(views.html.index("Contact"))
   }
@@ -20,29 +34,30 @@ object Application extends Controller {
   def statistics = Action {
     val sechat_key = "zauberstuhl.stats.sechat"
     val jd_key = "zauberstuhl.stats.joindiaspora"
-    val sechat_url = c.getString(sechat_key).get
-    val jd_url = c.getString(jd_key).get
-    val expire = c.getInt("zauberstuhl.cache.expire").get
+    val sechat_url = Utils.confd.getString(sechat_key).get
+    val jd_url = Utils.confd.getString(jd_key).get
+    val expire = Utils.confd.getInt("zauberstuhl.cache.expire").get
 
-    val sechat_json = StatisticsHelper.get(sechat_url, sechat_key, expire)
-    val joindiaspora_json = StatisticsHelper.get(jd_url, jd_key, expire)
+    val sechat_json = Utils.fetch(sechat_url, sechat_key, expire)
+    val joindiaspora_json = Utils.fetch(jd_url, jd_key, expire)
 
     Ok(views.html.statistics("Statistics",
       Json.obj( "sechat" -> sechat_json, "joindiaspora" -> joindiaspora_json)))
   }
 
   def donate(json: Boolean) = Action {
-    val values = c.getDoubleList("zauberstuhl.expenditures.values")
+    val values = Utils.confd.getDoubleList("zauberstuhl.expenditures.values")
       .getOrElse(null)
-    val reasons = c.getStringList("zauberstuhl.expenditures.reasons")
+    val reasons = Utils.confd.getStringList("zauberstuhl.expenditures.reasons")
       .getOrElse(null)
+
     val donationReasons = (reasons.asScala zip values.asScala).toMap
-    val donations = (new DonationHelper).getList
+    val donations: List[Donation] = DatabaseHelper.selectAllFromThisYear
 
     val title = "Donations for " + Calendar.getInstance().get(Calendar.YEAR)
 
     if (json) Ok(
-      Global.buildDonateJSON(donationReasons, donations)
+      Utils.buildDonateJSON(donationReasons, donations)
     ) else Ok(views.html.donate(title, donationReasons, donations))
   }
 }

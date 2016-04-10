@@ -1,4 +1,4 @@
-@(title: String, expenditures: Map[String, java.lang.Double], transactions: List[(String, Float)])
+@(title: String, reasons: Map[String, java.lang.Double], donations: List[helpers.Donation])
 
 @import helpers._
 
@@ -10,12 +10,12 @@
   <p>Keep stuff running fast and buy servers their coffee fix with a monthly donation!<br/>
   You can do that by using Paypal, Flattr, Bountysource or Bitcoin.</p>
   <ul>
-    @for((k, v) <- expenditures) {
+    @for((k, v) <- reasons) {
       <li>@k: @v.toString</li>
     }
   </ul>
   <div class="progress">
-  @defining(Global.getProgressWidth(expenditures, transactions)) { width =>
+  @defining(Utils.getProgressWidth(reasons, donations)) { width =>
     <div class="progress-bar progress-bar-success" style="width:@{width.toString}%">@{width.toString}%</div>
   }
   </div>
@@ -69,8 +69,8 @@
   <div class="page-header">
     <p class="lead">Latest donations:</p>
   </div>
-  @for((k, v) <- transactions) {
-    <span class="label label-default">@v.toString @k</span>
+  @for(donation <- donations) {
+    <span class="label label-default">@donation.received(3) @donation.currency</span>
   }
 </div>
 
