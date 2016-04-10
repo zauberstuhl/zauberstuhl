@@ -26,7 +26,7 @@ import scalaj.http._
 import scala.concurrent.duration._
 import scala.util.matching.Regex
 
-import javax.mail.{Session, Folder}
+import javax.mail.{Session, Folder, Message}
 
 import helpers._
 
@@ -109,15 +109,8 @@ class UpdateActor extends Actor {
       for (msg <- in.getMessages()) {
         val time: Int = (msg.getReceivedDate.getTime / 1000L).toInt
         if (time > preTime) {
-          val paypal = "member@paypal.de"
-          val spreadshirt = "partner@spreadshirt.net"
-          val from: String = msg.getFrom.mkString(",")
-          val regex: Regex = from match {
-            case str if str contains paypal => "(\\d+\\,\\d+) ([A-Z]{3})".r
-            case str if str contains spreadshirt => "Provision: (\\d+\\,\\d+) ([A-Z]{3})".r
-            case _ => "".r
-          }
-          if (!regex.toString.isEmpty) {
+          if (fromIsValid(msg)) {
+            val regex = "(\\d+\\,\\d+) ([A-Z]{3})".r
             val text: String = Utils.partText(msg).getOrElse("")
             regex.findFirstMatchIn(text) map {
               case Regex.Groups(rawAmount, rawCurrency) => {
@@ -139,5 +132,19 @@ class UpdateActor extends Actor {
       store.close()
     }
     Logger.info("[" + provider.name + "] Finished")
+  }
+
+  private def fromIsValid(msg: Message): Boolean = {
+    val paypal = "member@paypal.de"
+    val spreadshirt = "partner@spreadshirt.net"
+    // custom will allow the further process of draft emails
+    val custom = "lukas@zauberstuhl.de"
+    val from: String = msg.getFrom.mkString(",")
+    from match {
+      case str if str contains paypal => true
+      case str if str contains spreadshirt => true
+      case str if str contains custom => true
+      case _ => false
+    }
   }
 }
