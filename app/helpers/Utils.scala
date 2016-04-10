@@ -55,7 +55,7 @@ object Utils {
     (json \ "EUR" \ "last") match {
       case price: JsValue => price.as[Int]
       case default => {
-        println("[WARN] Using default BTC value " + DefaultBtcPrice)
+        Logger.warn("Using default BTC value " + DefaultBtcPrice)
         DefaultBtcPrice
       }
     }
@@ -66,17 +66,20 @@ object Utils {
     val donationSum: Double = donations.foldLeft(0.0) {
       (a: Double, b: Donation) => (b.received + a)
     }
-    if (donationSum > reasonSum) return MaxWidth
-    (donationSum / (reasonSum / MaxWidth)).toInt
+    if (donationSum > reasonSum) {
+      MaxWidth
+    } else {
+      (donationSum / (reasonSum / MaxWidth)).toInt
+    }
   }
 
   def fetch(url: String,
     cacheTag: String = null,
     expireCache: Int = 600): JsValue = if (cacheTag == null) {
-    this._fetch(url)
+    this.fetch(url)
   } else {
     Cache.getOrElse[JsValue](cacheTag, expireCache) {
-      this._fetch(url)
+      this.fetch(url)
     }
   }
 
@@ -111,7 +114,7 @@ object Utils {
       .replace(",",".")
       .toFloat)
 
-  private def _fetch(url: String): JsValue = try {
+  private def fetch(url: String): JsValue = try {
     val response: HttpResponse[String] = Http(url)
       .timeout(connTimeoutMs = 5000,
         readTimeoutMs = 15000)
