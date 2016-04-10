@@ -81,45 +81,25 @@ object Utils {
   }
 
   def partText(p: Part): Option[String] = {
-    val Outer = new Breaks
-    var res: Option[String] = None
     if (p.isMimeType("text/*")) {
       Option(p.getContent.asInstanceOf[String])
-    } else if (p.isMimeType("multipart/alternative")) {
+    } else if (p.isMimeType("multipart/*")) {
+      val Outer = new Breaks
+      var result: Option[String] = None
       val mp = p.getContent.asInstanceOf[Multipart]
       Outer.breakable {
         for (i <- 0 until mp.getCount) {
           val bp = mp.getBodyPart(i)
-          if (bp.isMimeType("text/plain") && res == None) {
-            res = partText(bp)
-            Outer.break
-          } else if (bp.isMimeType("text/html")) {
-            partText(bp) match {
-              case Some(plain) =>
-                res = Option(plain)
-                Outer.break
-              case None => //
-            }
-          } else {
-            res = partText(bp)
+          if (bp.isMimeType("text/*")) {
+            result = partText(bp)
             Outer.break
           }
         }
       }
-    } else if (p.isMimeType("multipart/*")) {
-      val mp = p.getContent.asInstanceOf[Multipart]
-      Outer.breakable {
-        for (i <- 0 until mp.getCount) {
-          partText(mp.getBodyPart(i)) match {
-            case Some(plain) =>
-              res = Option(plain)
-              Outer.break
-            case None => //
-          }
-        }
-      }
+      result
+    } else {
+      None
     }
-    res
   }
 
   def convertCurrencyAmount(currency: String, amount: String): (String, Float) =
