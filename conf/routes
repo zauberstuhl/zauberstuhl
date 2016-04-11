@@ -4,7 +4,6 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET     /statistics                 controllers.Application.statistics
 GET     /donate                     controllers.Application.donate(json:Boolean = false)
 GET     /donate/json                controllers.Application.donate(json:Boolean = true)
 

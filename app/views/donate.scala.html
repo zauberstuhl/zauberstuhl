@@ -1,78 +1,105 @@
-@(title: String, reasons: Map[String, java.lang.Double], donations: List[helpers.Donation])
+@(
+  reasons: Map[String, java.lang.Double],
+  donations: List[helpers.Donation]
+)
 
 @import helpers._
 
-@header(title)
-
 <script src="@routes.Assets.at("javascripts/bitcoinate-0.2.1.js")"></script>
 
-<div class="container">
-  <p>Keep stuff running fast and buy servers their coffee fix with a monthly donation!<br/>
-  You can do that by using Paypal, Flattr, Bountysource or Bitcoin.</p>
-  <ul>
-    @for((k, v) <- reasons) {
-      <li>@k: @v.toString</li>
-    }
-  </ul>
-  <div class="progress">
-  @defining(Utils.getProgressWidth(reasons, donations)) { width =>
-    <div class="progress-bar progress-bar-success" style="width:@{width.toString}%">@{width.toString}%</div>
-  }
-  </div>
-  <p>Payment methods:</p>
-</div>
-
-<div class="container">
-  <div class="row row-centered">
-    <div class="col-centered col-fixed">
-      <form action="https://www.paypal.com/cgi-bin/webscr"
-        method="post" target="_blank">
-        <input type="hidden" name="cmd" value="_s-xclick">
-        <input type="hidden" name="hosted_button_id" value="Z8U4YDYDX3A72">
-        <input type="image" src="https://www.paypalobjects.com/en_US/DE/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-      </form>
+<section id="donate" class="section-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1>Donate</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="row">
+          <div class="col-lg-12">
+            <p>Keep stuff running fast and buy servers their coffee fix with a monthly donation! You can do that by using Paypal, Flattr, Bountysource or Bitcoin.</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-2">
+            <b>Expenses</b>
+          </div>
+          <div class="col-lg-10">
+            <div class="progress">
+              @defining(Utils.getProgressWidth(reasons, donations)) { width =>
+                <div class="progress-bar progress-bar-danger" style="width:@{width.toString}%">@{width.toString}%</div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-2">
+            <b>Budget</b>
+          </div>
+          <div class="col-lg-10">
+            <div class="progress">
+              <div class="progress-bar progress-bar-success" style="width:0%">0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <ul class="list-group">
+          @for((k, v) <- reasons) {
+            <li class="list-group-item">
+              <span class="badge">@v.toString EUR</span>
+              @k
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h4>Payment Methods</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3" style="text-align:center">
+        <a href="https://www.bountysource.com/teams/sechat" target="_blank">
+          <img width="100px" src="@routes.Assets.at("images/bountysource_logo.jpg")" border="0"/><br/>
+          <img src="https://api.bountysource.com/badge/team?team_id=45006&style=raised" border="0"/>
+        </a>
+      </div>
+      <div class="col-md-2">
+        <a class="FlattrButton" style="display:none;" href="https://sechat.org/stream"></a>
+      </div>
+      <div class="col-md-2">
+        <button class="bitcoinate" data-size="30" data-address="1GCimNrGv6j7sN5xVXHxDvqiJZ8nmSFntS"><span></span>Donate BTC</button>
+      </div>
+      <div class="col-md-3" style="text-align:center">
+        <a href="http://shop.spreadshirt.de/sechat" target="_blank">
+          <img width="100px" src="@routes.Assets.at("images/spreadshirt_logo.jpg")" border="0"/>
+        </a>
+        <p>Buy some t-shirts or a coffee mug<br>from our spreadshirt shop.<br>
+        <u>We'll receive a one dollar<br>commission on every purchase!</u></p>
+      </div>
+      <div class="col-md-2">
+        <form action="https://www.paypal.com/cgi-bin/webscr"
+          method="post" target="_blank">
+          <input type="hidden" name="cmd" value="_s-xclick">
+          <input type="hidden" name="hosted_button_id" value="Z8U4YDYDX3A72">
+          <input type="image" src="https://www.paypalobjects.com/en_US/DE/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+          <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h4>Latest Donations</h4>
+        @for(donation <- donations.reverse) {
+          <span class="label label-default">@donation.received(3) @donation.currency</span>
+        }
+      </div>
     </div>
   </div>
-  <div class="row row-centered">
-    <div class="col-centered col-fixed">
-      <a class="FlattrButton" style="display:none;" href="https://sechat.org/stream"></a>
-    </div>
-  </div>
-  <div class="row row-centered">
-    <div class="col-centered col-fixed">
-      <button class="bitcoinate" data-size="30" data-address="1GCimNrGv6j7sN5xVXHxDvqiJZ8nmSFntS"><span></span>Donate BTC</button>
-    </div>
-  </div>
-  <div class="row row-centered">
-    <div class="col-centered col-fixed" style="text-align:center">
-      <a href="http://shop.spreadshirt.de/sechat" target="_blank">
-        <img width="100px" src="@routes.Assets.at("images/spreadshirt_logo.jpg")" border="0"/>
-      </a>
-    </div>
-    <div class="col-centered col-fixed" style="vertical-align:middle">
-      <p>Buy some t-shirts or a coffee mug<br>from our spreadshirt shop.<br>
-      <u>We'll receive a one dollar<br>commission on every purchase!</u></p>
-    </div>
-  </div>
-  <div class="row row-centered">
-    <div class="col-centered col-fixed" style="text-align:center">
-      <a href="https://www.bountysource.com/teams/sechat" target="_blank">
-        <img width="100px" src="@routes.Assets.at("images/bountysource_logo.jpg")" border="0"/><br/>
-        <img src="https://api.bountysource.com/badge/team?team_id=45006&style=raised" border="0"/>
-      </a>
-    </div>
-  </div>
-</div>
-
-<div class="container">
-  <div class="page-header">
-    <p class="lead">Latest donations:</p>
-  </div>
-  @for(donation <- donations) {
-    <span class="label label-default">@donation.received(3) @donation.currency</span>
-  }
-</div>
+</section>
 
 <script type="text/javascript">
   /* <![CDATA[ */
@@ -85,4 +112,3 @@
   })();
   /* ]]> */
 </script>
-@footer()

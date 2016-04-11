@@ -17,7 +17,7 @@
 package helpers
 
 import play.api.{Play, Logger}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, JsUndefined, Json}
 import play.api.cache._
 import play.api.Play.current
 
@@ -42,6 +42,13 @@ object Utils {
 
   val BlockChainUrl = "https://blockchain.info/address/"
   val BlockChainParam = "?filter=2&format=json" // 1 = sent; 2 = received
+
+  def printSafelyJson(value: JsValue, err: String = "0"): String = {
+    value match {
+      case result: JsUndefined => err
+      case result => result.as[String]
+    }
+  }
 
   def buildDonateJSON(reasons: Map[String, java.lang.Double], donations: List[Donation]): String =
     """{"maxWidth":""" + MaxWidth + ""","width":""" + this.getProgressWidth(reasons, donations) + """}"""

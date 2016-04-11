@@ -1,26 +1,30 @@
-@(title: String, stats: play.api.libs.json.JsValue)
+@(stats: play.api.libs.json.JsValue)
 
-@import play.api.libs.json._
+@import helpers.Utils
+@import play.api.libs.json.{JsValue, JsUndefined}
 
-@header(title)
-
-<div class="container">
-  <div id="monitor" class="panel panel-default tab-box">
-    <div class="panel-body">
-      <div class="tab-content">
-        <div id="fuel-tab" class="tab-pane active">
-          <div class="row">
-            <div class="col-sm-12 chart">
-              <div id="diaspora-stats"></div>
+<section id="statistics" class="section-grey">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+          <div id="monitor" class="panel panel-default tab-box">
+            <div class="panel-body">
+              <div class="tab-content">
+                <div id="fuel-tab" class="tab-pane active">
+                  <div class="row">
+                    <div class="col-sm-12 chart">
+                      <div id="diaspora-stats"></div>
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<script src="@routes.Assets.at("javascripts/autogen_stats.js")"></script>
 <script src="@routes.Assets.at("javascripts/raphael-min.js")"></script>
 <script src="@routes.Assets.at("javascripts/morris.min.js")"></script>
 <script>
@@ -29,15 +33,15 @@
       element: 'diaspora-stats',
       data: [{
         y: 'Sechat.org',
-        a: @((stats \ "sechat" \ "total_users")),
-        b: @((stats \ "sechat" \ "active_users_halfyear")),
-        c: @((stats \ "sechat" \ "active_users_monthly"))
+        a: @(Utils.printSafelyJson((stats \ "sechat" \ "total_users"))),
+        b: @(Utils.printSafelyJson((stats \ "sechat" \ "active_users_halfyear"))),
+        c: @(Utils.printSafelyJson((stats \ "sechat" \ "active_users_monthly")))
       },
       {
         y: 'Joindiaspora.com',
-        a: @((stats \ "joindiaspora" \ "total_users")),
-        b: @((stats \ "joindiaspora" \ "active_users_halfyear")),
-        c: @((stats \ "joindiaspora" \ "active_users_monthly"))
+        a: @(Utils.printSafelyJson((stats \ "joindiaspora" \ "total_users"))),
+        b: @(Utils.printSafelyJson((stats \ "joindiaspora" \ "active_users_halfyear"))),
+        c: @(Utils.printSafelyJson((stats \ "joindiaspora" \ "active_users_monthly")))
       }],
       xkey: 'y',
       ykeys: ['a', 'b', 'c'],
@@ -46,5 +50,3 @@
     });
   });
 </script>
-
-@footer()

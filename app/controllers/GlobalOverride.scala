@@ -44,19 +44,19 @@ object GlobalOverride extends GlobalSettings {
 
   override def onError(req: RequestHeader, ex: Throwable) = {
     Future.successful(InternalServerError(views.html.error(
-      "500 Internal Server Error",
+      req, "500 Internal Server Error",
       "Outsch .. What have you done :?")))
   }
 
   override def onBadRequest(req: RequestHeader, error: String) = {
     Future.successful(NotFound(views.html.error(
-      "400 Bad Request",
+      req, "400 Bad Request",
       "The request could not be understood by the server!")))
   }
 
   override def onHandlerNotFound(req: RequestHeader) = {
     Future.successful(NotFound(views.html.error(
-      "404 Not Found",
+      req, "404 Not Found",
       "The requested URL was not found on the server!")))
   }
 }

@@ -22,44 +22,50 @@ import play.api.libs.json._
 
 import scala.collection.JavaConverters._
 
-import java.util.Calendar
+import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import helpers._
 
 object Application extends Controller {
-  def index = Action {
-    Ok(views.html.index("Contact"))
+  val sechatKey = "zauberstuhl.stats.sechat"
+  val jdKey = "zauberstuhl.stats.joindiaspora"
+
+  val values = Utils.confd.getDoubleList(
+    "zauberstuhl.expenditures.values").get
+  val reasons = Utils.confd.getStringList(
+    "zauberstuhl.expenditures.reasons").get
+
+  val sechatUrl = Utils.confd.getString(sechatKey).get
+  val jdUrl = Utils.confd.getString(jdKey).get
+  val expire = Utils.confd.getInt("zauberstuhl.cache.expire").get
+
+  def index = Action.async { implicit request =>
+    for {
+      donationReasons <- Future { (reasons.asScala zip values.asScala).toMap }
+      donations <- Future { DatabaseHelper.selectAllFromThisYear }
+      statistics <- Future {
+        val sechatJson = Utils.fetch(sechatUrl, sechatKey, expire)
+        val jdJson = Utils.fetch(jdUrl, jdKey, expire)
+
+        Json.obj("sechat" -> sechatJson, "joindiaspora" -> jdJson)
+      }
+    } yield Ok(views.html.index(request,
+      "zauberstuhl",
+      donationReasons,
+      donations,
+      statistics))
   }
 
-  def statistics = Action {
-    val sechat_key = "zauberstuhl.stats.sechat"
-    val jd_key = "zauberstuhl.stats.joindiaspora"
-    val sechat_url = Utils.confd.getString(sechat_key).get
-    val jd_url = Utils.confd.getString(jd_key).get
-    val expire = Utils.confd.getInt("zauberstuhl.cache.expire").get
-
-    val sechat_json = Utils.fetch(sechat_url, sechat_key, expire)
-    val joindiaspora_json = Utils.fetch(jd_url, jd_key, expire)
-
-    Ok(views.html.statistics("Statistics",
-      Json.obj( "sechat" -> sechat_json, "joindiaspora" -> joindiaspora_json)))
-  }
-
-  def donate(json: Boolean) = Action {
-    val values = Utils.confd.getDoubleList(
-      "zauberstuhl.expenditures.values").get
-    val reasons = Utils.confd.getStringList(
-      "zauberstuhl.expenditures.reasons").get
-
+  def donate(json: Boolean) = Action { implicit request =>
     val donationReasons = (reasons.asScala zip values.asScala).toMap
     val donations: List[Donation] = DatabaseHelper.selectAllFromThisYear
-
-    val title = "Donations for " + Calendar.getInstance().get(Calendar.YEAR)
 
     if (json) {
       Ok(Utils.buildDonateJSON(donationReasons, donations))
     } else {
-      Ok(views.html.donate(title, donationReasons, donations))
+      // this is required for backward compatibility
+      Redirect(routes.Application.index + "#donate")
     }
   }
 }
