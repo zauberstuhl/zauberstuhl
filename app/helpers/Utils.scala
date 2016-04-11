@@ -128,8 +128,9 @@ object Utils {
       .asString
     Json.parse(response.body)
   } catch {
-    case _ : Throwable => {
-      Logger.error("Wasn't able to fetch data from " + url)
+    case e : Throwable => {
+      Logger.error("Wasn't able to fetch data from " +
+        url + ": " + e.getMessage)
       Json.parse("{}")
     }
   }
