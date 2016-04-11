@@ -33,20 +33,18 @@
       element: 'diaspora-stats',
       data: [{
         y: 'Sechat.org',
-        a: @(Utils.printSafelyJson((stats \ "sechat" \ "total_users"))),
-        b: @(Utils.printSafelyJson((stats \ "sechat" \ "active_users_halfyear"))),
-        c: @(Utils.printSafelyJson((stats \ "sechat" \ "active_users_monthly")))
+        a: @(Utils.printSafelyJson((stats \ "sechat" \ "active_users_halfyear"))),
+        b: @(Utils.printSafelyJson((stats \ "sechat" \ "active_users_monthly")))
       },
       {
         y: 'Joindiaspora.com',
-        a: @(Utils.printSafelyJson((stats \ "joindiaspora" \ "total_users"))),
-        b: @(Utils.printSafelyJson((stats \ "joindiaspora" \ "active_users_halfyear"))),
-        c: @(Utils.printSafelyJson((stats \ "joindiaspora" \ "active_users_monthly")))
+        a: @(Utils.printSafelyJson((stats \ "joindiaspora" \ "active_users_halfyear"))),
+        b: @(Utils.printSafelyJson((stats \ "joindiaspora" \ "active_users_monthly")))
       }],
       xkey: 'y',
-      ykeys: ['a', 'b', 'c'],
-      labels: ['Total user', 'Active half-yearly', 'Active monthly'],
-      barColors: ['#A52A2A','#000000','#72A0C1']
+      ykeys: ['a', 'b'],
+      labels: ['Active half-yearly', 'Active monthly'],
+      barColors: ['#000000','#A52A2A']
     });
   });
 </script>
