@@ -38,6 +38,7 @@ object Utils {
   val BlockChainUrl = "https://blockchain.info/address/"
   val BlockChainParam = "?filter=2&format=json" // 1 = sent; 2 = received
 
+  val EmptyJson = "{}" // default e.g. while fetching from url
   def printSafelyJson(value: JsValue, err: String = "0"): String = {
     value match {
       case result: JsUndefined => err
@@ -118,6 +119,9 @@ object Utils {
 
   private def fetch(url: String): JsValue = try {
     val response: HttpResponse[String] = Http(url)
+      // NOTE this fetches only statistic data nothing vital,
+      // but in future it should accept letsencrypt
+      .option(HttpOptions.allowUnsafeSSL)
       .timeout(connTimeoutMs = 5000,
         readTimeoutMs = 15000)
       .asString
@@ -126,7 +130,7 @@ object Utils {
     case e : Throwable => {
       Logger.error("Wasn't able to fetch data from " +
         url + ": " + e.getMessage)
-      Json.parse("{}")
+      Json.parse(EmptyJson)
     }
   }
 }
