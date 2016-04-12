@@ -26,19 +26,26 @@
 
 <script src="@routes.Assets.at("javascripts/raphael-min.js")"></script>
 <script src="@routes.Assets.at("javascripts/morris.min.js")"></script>
+
 <script>
   $(function () {
     Morris.Bar({
       element: 'diaspora-stats',
       data: [{
         y: 'Sechat.org',
-        a: @(Utils.printSafelyJson((stats \ "sechat" \ "active_users_halfyear"))),
-        b: @(Utils.printSafelyJson((stats \ "sechat" \ "active_users_monthly")))
+        @{
+          val sechat = (stats \ "sechat").as[DiasporaStats]
+          "a: " + sechat.halfyear + "," +
+          "b: " + sechat.monthly
+        }
       },
       {
         y: 'Joindiaspora.com',
-        a: @(Utils.printSafelyJson((stats \ "joindiaspora" \ "active_users_halfyear"))),
-        b: @(Utils.printSafelyJson((stats \ "joindiaspora" \ "active_users_monthly")))
+        @{
+          val jd = (stats \ "jd").as[DiasporaStats]
+          "a: " + jd.halfyear + "," +
+          "b: " + jd.monthly
+        }
       }],
       xkey: 'y',
       ykeys: ['a', 'b'],

@@ -49,7 +49,7 @@ object Application extends Controller {
         val sechatJson = Utils.fetch(sechatUrl, sechatKey, expire)
         val jdJson = Utils.fetch(jdUrl, jdKey, expire)
 
-        Json.obj("sechat" -> sechatJson, "joindiaspora" -> jdJson)
+        Json.obj("sechat" -> sechatJson, "jd" -> jdJson)
       }
     } yield Ok(views.html.index(request,
       "zauberstuhl",
