@@ -27,12 +27,7 @@ import scalaj.http._
 
 import util.control.Breaks
 
-trait Provider {
-  def name: String =
-    "(Provider|helpers.)".r.replaceAllIn(getClass.getName, "")
-}
-case class BlockChainProvider() extends Provider
-case class EmailProvider() extends Provider
+import objects.Database.Donation
 
 object Utils {
   val confd = Play.current.configuration

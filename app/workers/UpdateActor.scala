@@ -29,6 +29,9 @@ import scala.util.matching.Regex
 import javax.mail.{Session, Folder, Message}
 
 import helpers._
+import objects.Database.Donation
+import objects.Statistics.DiasporaStats
+import objects.Provider.{Provider, _}
 
 class UpdateActor extends Actor {
   val SATOSHIBASE: Int = 10

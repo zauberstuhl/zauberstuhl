@@ -26,6 +26,7 @@ import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import helpers._
+import objects.Database.Donation
 
 object Application extends Controller {
   val sechatKey = "zauberstuhl.stats.sechat"

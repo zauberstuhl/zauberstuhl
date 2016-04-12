@@ -25,7 +25,7 @@ import akka.actor.Props
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import helpers._
+import objects.Provider._
 import workers._
 
 object GlobalOverride extends GlobalSettings {
