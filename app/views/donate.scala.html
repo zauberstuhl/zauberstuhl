@@ -1,6 +1,6 @@
 @(
-  reasons: Map[String, java.lang.Double],
-  donations: List[objects.Database.Donation]
+  reasons: Map[String, Double],
+  donations: objects.Database.DonationList
 )
 
 @import helpers._
@@ -27,8 +27,8 @@
           </div>
           <div class="col-lg-10">
             <div class="progress">
-              @defining(Utils.getProgressWidth(reasons, donations)) { width =>
-                <div class="progress-bar progress-bar-danger" style="width:@{width.toString}%">@{width.toString}%</div>
+              @defining(Utils.calculateReceivedInPercent(reasons.values.toList, donations)) { width =>
+                <div class="progress-bar progress-bar-success" style="width:@{width.toString}%">@{width.toString}%</div>
               }
             </div>
           </div>
@@ -39,7 +39,13 @@
           </div>
           <div class="col-lg-10">
             <div class="progress">
-              <div class="progress-bar progress-bar-success" style="width:0%">0%</div>
+              @defining(Utils.calculateBudgetInPercent) { width =>
+                @if(width < 0) {
+                  <div class="progress-bar progress-bar-danger" style="width:100%">@{width}%</div>
+                } else {
+                  <div class="progress-bar progress-bar-success" style="width:@{width}%">@{width}%</div>
+                }
+              }
             </div>
           </div>
         </div>
@@ -93,7 +99,7 @@
     <div class="row">
       <div class="col-md-12">
         <h4>Latest Donations</h4>
-        @for(donation <- donations.reverse) {
+        @for(donation <- donations.list.reverse) {
           <span class="label label-default">@donation.received(3) @donation.currency</span>
         }
       </div>

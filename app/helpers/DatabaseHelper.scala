@@ -23,7 +23,7 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser.get
 
-import objects.Database.Donation
+import objects.Database.{DonationList, Donation}
 import objects.Provider.Provider
 
 object DatabaseHelper {
@@ -50,11 +50,37 @@ object DatabaseHelper {
     .execute()
   }
 
-  def selectAllFromThisYear: List[Donation] = DB.withConnection { implicit c =>
-    SQL("""select received, currency, provider, time
-      from donations
-      where strftime('%Y', time, 'unixepoch') == strftime('%Y');""")
-    .as(donations *)
+  def selectAll: DonationList = DB.withConnection { implicit c =>
+    // NOTE select almost all since 2016
+    // where strftime('%Y', time, 'unixepoch') == strftime('%Y');""")
+    new DonationList(
+      SQL("""select received, currency, provider, time
+        from donations
+        where strftime('%Y', time, 'unixepoch') >= "2016";""")
+      .as(donations *)
+    )
+  }
+
+  def selectAllFromThisYear: DonationList = DB.withConnection { implicit c =>
+    new DonationList(
+      SQL("""select received, currency, provider, time
+        from donations
+        where strftime('%Y', time, 'unixepoch') == strftime('%Y');""")
+      .as(donations *)
+    )
+  }
+
+  def firstEntry: Option[Donation] = DB.withConnection { implicit c =>
+    //SQL("""select received, currency, provider, time
+    //  from donations
+    //  order by time ASC
+    //  limit 1;""")
+    //.as(donations *)
+    //.headOption
+    //
+    // NOTE this is a hack since we received donations before 2016
+    // which shouldn't be used for calculation
+    Option(Donation(0.0, "EUR", "DoNotStartFromBeginning", 1460983688))
   }
 
   def lastEntry(p: Provider): Option[Donation] = DB.withConnection { implicit c =>

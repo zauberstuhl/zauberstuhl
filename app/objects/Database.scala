@@ -32,4 +32,14 @@ object Database {
       ", provider -> " + provider +
       ", time -> " + time.toString
   }
+
+  case class DonationList(list: List[Donation]) {
+    def total: Double = list.foldLeft(0.0) {
+      (a: Double, b: Donation) => (b.received + a)
+    }
+
+    override def toString: String = list.foldLeft("") {
+      (a: String, b: Donation) => a + "\n" + b.toString
+    }
+  }
 }
