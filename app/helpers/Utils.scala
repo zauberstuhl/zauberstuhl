@@ -81,7 +81,7 @@ object Utils {
         case a if a <= 0 => 1
       }
       val sumExpected = readExpenditureValues.foldLeft(0.0)(_ + _)
-      val budget = (((sumReceived / years) - sumExpected) * years).toInt
+      val budget = (sumReceived - (sumExpected * years)).toInt
 
       calculateInPercent(budget, sumExpected)
     }
@@ -97,7 +97,7 @@ object Utils {
 
   def calculateInPercent(current: Double, max: Double, maxWidth: Int = MaxWidth): Double =
     if (current < max) {
-      math.round(current / (max / maxWidth))
+      math.round((maxWidth / max) * current)
     } else {
       maxWidth
     }
