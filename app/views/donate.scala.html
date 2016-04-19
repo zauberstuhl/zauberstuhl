@@ -77,7 +77,9 @@
         <a class="FlattrButton" style="display:none;" href="https://sechat.org/stream"></a>
       </div>
       <div class="col-md-2">
-        <button class="bitcoinate" data-size="30" data-address="1GCimNrGv6j7sN5xVXHxDvqiJZ8nmSFntS"><span></span>Donate BTC</button>
+        <button class="bitcoinate" data-size="30" data-address="@{
+            Utils.confd.getString("zauberstuhl.btc.address").getOrElse("not set")
+          }"><span></span>Donate BTC</button>
       </div>
       <div class="col-md-3" style="text-align:center">
         <a href="http://shop.spreadshirt.de/sechat" target="_blank">
