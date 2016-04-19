@@ -52,7 +52,7 @@ object Application extends Controller {
   }
 
   def recaptchaVerify = Action { implicit request =>
-    val response = request.body.asFormUrlEncoded.get("response").map(_.head)
+    val response = request.body.asFormUrlEncoded.get("response")
     val valid: Boolean = Recaptcha.validate(response.mkString(""))
 
     if (valid) {
