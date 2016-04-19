@@ -101,7 +101,9 @@
       <div class="col-md-12">
         <h4>Direct to Bank Transfer</h4>
         <div id="directBankTransfer" class="g-recaptcha g-recaptcha-center"
-          data-callback="reCaptchaCallback" data-sitekey="6LcdtdESAAAAAAuD0lW-q4eRNHHPOrvvcSaFziX7">
+          data-callback="reCaptchaCallback" data-sitekey="@{
+            Utils.confd.getString("zauberstuhl.recaptcha.client").getOrElse("not set")
+          }">
         </div>
       </div>
     </div>

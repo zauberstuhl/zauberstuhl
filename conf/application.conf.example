@@ -89,3 +89,4 @@ zauberstuhl.bank.bic = "not set"
 ## Recaptcha settings
 zauberstuhl.recaptcha.url = "https://www.google.com/recaptcha/api/siteverify"
 zauberstuhl.recaptcha.secret = "secret"
+zauberstuhl.recaptcha.client = "client key"
