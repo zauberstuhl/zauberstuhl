@@ -113,13 +113,13 @@ object Utils {
   def combinedExpenditures: Map[String, Double] =
     (readExpenditureReasons zip readExpenditureValues).toMap
 
-  def fetch(url: String,
-    cacheTag: String = null,
-    expireCache: Int = 600): JsValue = if (cacheTag == null) {
-    this.fetch(url)
+  def fetch(url: String, cacheTag: String = "", expireCache: Int = 600,
+    data: Seq[(String, String)] = Seq()): JsValue =
+  if (cacheTag.isEmpty) {
+    this.fetch(url, data)
   } else {
     Cache.getOrElse[JsValue](cacheTag, expireCache) {
-      this.fetch(url)
+      this.fetch(url, data)
     }
   }
 
@@ -154,15 +154,21 @@ object Utils {
       .replace(",",".")
       .toFloat)
 
-  private def fetch(url: String): JsValue = try {
-    val response: HttpResponse[String] = Http(url)
-      // NOTE this fetches only statistic data nothing vital,
-      // but in future it should accept letsencrypt
-      .option(HttpOptions.allowUnsafeSSL)
-      .timeout(connTimeoutMs = 5000,
-        readTimeoutMs = 15000)
-      .asString
-    Json.parse(response.body)
+  private def fetch(url: String, data: Seq[(String, String)]): JsValue = try {
+    val request: HttpRequest = Http(url)
+    if (data.size > 0) {
+      Json.parse(request.postForm(data).asString.body)
+    } else {
+      Json.parse(request
+        // NOTE this fetches only statistic data nothing vital,
+        // but in future it should accept letsencrypt
+        .option(HttpOptions.allowUnsafeSSL)
+        .timeout(connTimeoutMs = 5000,
+          readTimeoutMs = 15000)
+        .asString
+        .body
+      )
+    }
   } catch {
     case e : Throwable => {
       Logger.error("Wasn't able to fetch data from " +

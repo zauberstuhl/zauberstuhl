@@ -51,6 +51,24 @@ object Application extends Controller {
       statistics))
   }
 
+  def recaptchaVerify = Action { implicit request =>
+    val response = request.body.asFormUrlEncoded.get("response").map(_.head)
+    val valid: Boolean = Recaptcha.validate(response.mkString(""))
+
+    if (valid) {
+      Ok(JsObject(Seq(
+        "iban" -> JsString(
+          Utils.confd.getString("zauberstuhl.bank.iban").getOrElse("")
+        ),
+        "bic" -> JsString(
+          Utils.confd.getString("zauberstuhl.bank.bic").getOrElse("")
+        )
+      )))
+    } else {
+      Unauthorized
+    }
+  }
+
   def donate(json: Boolean) = Action { implicit request => if (json) {
     Ok(Utils.buildDonationStatusInJson)
   } else {

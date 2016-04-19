@@ -17,3 +17,25 @@ $(function() {
         event.preventDefault();
     });
 });
+
+// check recaptcha via ajax call
+function reCaptchaCallback() {
+  // $('#g-recaptcha-response').val()
+  if (!grecaptcha) return;
+  var dbt = $('#directBankTransfer');
+  var resp = grecaptcha.getResponse();
+  $.ajax({
+    type: "POST",
+    url: "/api/recaptcha/verify",
+    data: { response: resp },
+    success: function(data) {
+      dbt.html("<p><b>IBAN</b>: " + data.iban + "</p>" +
+        "<p><b>BIC</b>: "+ data.bic + "</p>")
+    },
+    error: function(err) {
+      dbt.html("Something went wrong! Please " +
+        "<a href=\"/#contact\">contact me</a> directly..")
+    },
+    dataType: "json"
+  });
+}
