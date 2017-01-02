@@ -67,26 +67,36 @@ object Utils {
     }
   }
 
-  def calculateBudgetInPercent: Double = DatabaseHelper.firstEntry match {
-    case Some(firstEntry) => {
-      val calendarNow = Calendar.getInstance()
-      val calendarThen = Calendar.getInstance()
-      val sumReceived: Double = DatabaseHelper.selectAll.total
-      calendarThen.setTimeInMillis(firstEntry.time * 1000L)
-
-      val yearNow = calendarNow.get(Calendar.YEAR)
-      val yearThen = calendarThen.get(Calendar.YEAR)
-      val years = (yearNow - yearThen) match {
-        case a if a > 0 => a + 1
-        case a if a <= 0 => 1
-      }
-      val sumExpected = readExpenditureValues.foldLeft(0.0)(_ + _)
-      val budget = (sumReceived - (sumExpected * years)).toInt
-
-      calculateInPercent(budget, sumExpected)
-    }
-    case None => 0
+  def calculateBudgetInPercent: Double = {
+    val received = calculateReceivedInPercent(
+      readExpenditureValues,
+      DatabaseHelper.selectAllFromThisYear
+    )
+    (received - 100)
   }
+  /* TODO is not working since expenditures are growing over the year
+   * A fix could be tracking all expenditures in the database
+   * def calculateBudgetInPercent: Double = DatabaseHelper.firstEntry match {
+   *   case Some(firstEntry) => {
+   *     val calendarNow = Calendar.getInstance()
+   *     val calendarThen = Calendar.getInstance()
+   *     val sumReceived: Double = DatabaseHelper.selectAll.total
+   *     calendarThen.setTimeInMillis(firstEntry.time * 1000L)
+   *
+   *     val yearNow = calendarNow.get(Calendar.YEAR)
+   *     val yearThen = calendarThen.get(Calendar.YEAR)
+   *     val years = (yearNow - yearThen) match {
+   *       case a if a > 0 => a + 1
+   *       case a if a <= 0 => 1
+   *     }
+   *     val sumExpected = readExpenditureValues.foldLeft(0.0)(_ + _)
+   *     val budget = (sumReceived - (sumExpected * years)).toInt
+   *
+   *     calculateInPercent(budget, sumExpected)
+   *   }
+   *   case None => 0
+   * }
+  */
 
   def calculateReceivedInPercent(expens: List[Double], donations: DonationList): Double = {
     val sumExpected = expens.foldLeft(0.0)(_ + _)
