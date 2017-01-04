@@ -67,39 +67,8 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-3" style="text-align:center">
-        <a href="https://www.bountysource.com/teams/sechat" target="_blank">
-          <img width="100px" src="@routes.Assets.at("images/bountysource_logo.jpg")" border="0"/><br/>
-          <img src="https://api.bountysource.com/badge/team?team_id=45006&style=raised" border="0"/>
-        </a>
-      </div>
-      <div class="col-md-2">
-        <a class="FlattrButton" style="display:none;" href="https://sechat.org/stream"></a>
-      </div>
-      <div class="col-md-3" style="text-align:center">
-        <a href="http://shop.spreadshirt.de/sechat" target="_blank">
-          <img width="100px" src="@routes.Assets.at("images/spreadshirt_logo.jpg")" border="0"/>
-        </a>
-        <p>Buy some t-shirts or a coffee mug<br>from our spreadshirt shop.<br>
-        <u>We'll receive a one dollar<br>commission on every purchase!</u></p>
-      </div>
-      <div class="col-md-2">
-        <button class="bitcoinate" data-size="30" data-address="@Utils.confd("btc.address")"><span></span>Donate BTC</button>
-      </div>
-      <div class="col-md-2">
-        <form action="https://www.paypal.com/cgi-bin/webscr"
-          method="post" target="_blank">
-          <input type="hidden" name="cmd" value="_s-xclick">
-          <input type="hidden" name="hosted_button_id" value="@Utils.confd("paypal.id")">
-          <input type="image" src="https://www.paypalobjects.com/en_US/DE/i/btn/btn_donateCC_LG.gif"
-            border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-          <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-        </form>
-      </div>
-    </div>
-    <div class="row">
       <div class="col-md-6">
-        <h4>Pay via Stripe.com</h4>
+        <h3>Credit Card</h3>
         <form id="payment-form" action="/stripe/payment" method="POST" class="form-horizontal" role="form" autocomplete="on">
           <fieldset>
             <div class="form-group">
@@ -124,14 +93,28 @@
               <div class="col-sm-3">
                 <input class="form-control" id="cvc" placeholder="123" data-stripe="cvc" type="text" autocomplete="off">
               </div>
+              <label class="col-sm-4 control-label" for="subscribe">Monthly subscription</label>
+              <div class="col-sm-1">
+                <input class="form-control" id="subscribe" name="subscribe" type="checkbox" autocomplete="subscribe">
+              </div>
+            </div>
+            <div class="form-group">
               <label class="col-sm-3 control-label" for="amount">Amount</label>
               <div class="col-sm-3">
                 <input class="form-control" id="amount" name="amount" value="5" type="number" autocomplete="amount">
               </div>
+              <div class="col-sm-3">
+                <select class="form-control" id="currency" name="currency" autocomplete="currency">
+                  <option value="USD">&#36; US Dollar</option>
+                  <option value="CAD">&#36; Canadian Dollar</option>
+                  <option value="GBP">&#163; Pound</option>
+                  <option value="EUR" selected>&#128; Euro</option>
+                </select>
+              </div>
             </div>
             <div class="form-group">
               <div class="col-sm-offset-3 col-sm-9">
-                <button type="submit" class="btn btn-success form-control">Pay Now</button>
+                <button type="submit" class="btn btn-success form-control">Donate</button>
               </div>
             </div>
           </fieldset>
@@ -142,11 +125,45 @@
         <script src="@routes.Assets.at("javascripts/stripe.js")"></script>
       </div>
       <div class="col-md-6">
-        <h4>Direct to Bank Transfer</h4>
+        <h3>Alternative Options</h3>
+        <div class="col-md-6" style="text-align:center">
+          <a href="https://www.bountysource.com/teams/sechat" target="_blank">
+            <img width="100px" src="@routes.Assets.at("images/bountysource_logo.jpg")" border="0"/><br/>
+            <img src="https://api.bountysource.com/badge/team?team_id=45006&style=raised" border="0"/>
+          </a>
+        </div>
+        <div class="col-md-6" style="text-align:center">
+          <a href="http://shop.spreadshirt.de/sechat" target="_blank">
+            <img width="100px" src="@routes.Assets.at("images/spreadshirt_logo.jpg")" border="0"/>
+          </a>
+          <p>Buy some t-shirts or a coffee mug<br>from our spreadshirt shop.<br>
+          <u>We'll receive a one dollar<br>commission on every purchase!</u></p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Direct to Bank Transfer</h3>
         <p>Please include the word "zauberstuhl" in the usage field of the transfer!</p>
         <div id="directBankTransfer" class="g-recaptcha g-recaptcha-center"
           data-callback="reCaptchaCallback" data-sitekey="@Utils.confd("recaptcha.client")">
         </div>
+      </div>
+      <div class="col-md-2">
+        <a class="FlattrButton" style="display:none;" href="https://sechat.org/stream"></a>
+      </div>
+      <div class="col-md-2">
+        <button class="bitcoinate" data-size="30" data-address="@Utils.confd("btc.address")"><span></span>Donate BTC</button>
+      </div>
+      <div class="col-md-2">
+        <form action="https://www.paypal.com/cgi-bin/webscr"
+          method="post" target="_blank">
+          <input type="hidden" name="cmd" value="_s-xclick">
+          <input type="hidden" name="hosted_button_id" value="@Utils.confd("paypal.id")">
+          <input type="image" src="https://www.paypalobjects.com/en_US/DE/i/btn/btn_donateCC_LG.gif"
+            border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+          <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+        </form>
       </div>
     </div>
     <div class="row">
