@@ -1,0 +1,16 @@
+@(request: RequestHeader, title: String)
+
+@header(request, title)
+
+<section class="section-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <p class="lead">Thanks for your support \m/ We received your donation request!</p>
+        <img src="@routes.Assets.at("images/awesome.jpg")" border="0"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+@footer()

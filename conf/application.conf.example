@@ -93,3 +93,7 @@ zauberstuhl.recaptcha.client = "client key"
 #
 ## Paypal ID
 zauberstuhl.paypal.id = "1234"
+#
+## Stripe.com API keys
+zauberstuhl.stripe.apiKey = "123"
+zauberstuhl.stripe.publishableKey = "123"

@@ -8,7 +8,8 @@ libraryDependencies ++= Seq(
   cache,
   "org.scalaj" %% "scalaj-http" % "1.1.4",
   "org.apache.commons" % "commons-email" % "1.3",
-  "org.xerial" % "sqlite-jdbc" % "3.8.11.2"
+  "org.xerial" % "sqlite-jdbc" % "3.8.11.2",
+  "com.stripe" % "stripe-java" % "3.5.0"
 )
 
 play.Project.playScalaSettings

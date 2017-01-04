@@ -20,6 +20,7 @@ object Provider {
   trait Provider {
     def name: String = getClass.getName
   }
+  case class StripeProvider() extends Provider
   case class BlockChainProvider() extends Provider
   case class EmailProvider() extends Provider
 }

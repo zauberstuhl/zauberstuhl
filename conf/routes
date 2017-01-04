@@ -14,5 +14,7 @@ GET     /donate/json                controllers.Application.donate(json:Boolean 
 GET     /api/donations              controllers.Application.donate(json:Boolean = true)
 POST    /api/recaptcha/verify       controllers.Application.recaptchaVerify
 
+POST    /stripe/payment             controllers.Stripe.oneTimePayment
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -63,7 +63,7 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <h4>Payment Methods</h4>
+        <h2>Payment Methods</h2>
       </div>
     </div>
     <div class="row">
@@ -76,17 +76,17 @@
       <div class="col-md-2">
         <a class="FlattrButton" style="display:none;" href="https://sechat.org/stream"></a>
       </div>
-      <div class="col-md-2">
-        <button class="bitcoinate" data-size="30" data-address="@{
-            Utils.confd.getString("zauberstuhl.btc.address").getOrElse("not set")
-          }"><span></span>Donate BTC</button>
-      </div>
       <div class="col-md-3" style="text-align:center">
         <a href="http://shop.spreadshirt.de/sechat" target="_blank">
           <img width="100px" src="@routes.Assets.at("images/spreadshirt_logo.jpg")" border="0"/>
         </a>
         <p>Buy some t-shirts or a coffee mug<br>from our spreadshirt shop.<br>
         <u>We'll receive a one dollar<br>commission on every purchase!</u></p>
+      </div>
+      <div class="col-md-2">
+        <button class="bitcoinate" data-size="30" data-address="@{
+            Utils.confd.getString("zauberstuhl.btc.address").getOrElse("not set")
+          }"><span></span>Donate BTC</button>
       </div>
       <div class="col-md-2">
         <form action="https://www.paypal.com/cgi-bin/webscr"
@@ -102,7 +102,50 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
+        <h4>Pay via Stripe.com</h4>
+        <form id="payment-form" action="/stripe/payment" method="POST" class="form-horizontal" role="form" autocomplete="on">
+          <fieldset>
+            <div class="form-group">
+              <div class="col-sm-12">
+                <p class="payment-errors" style="color:red" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label" for="number">Card Number</label>
+              <div class="col-sm-9">
+                <input class="form-control" id="number" placeholder="4242 4242 4242 4242" data-stripe="number" type="tel" autocomplete="number">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label" for="exp">Expiration Date</label>
+              <div class="col-sm-9">
+                <input class="form-control" placeholder="MM / YY" id="exp" data-stripe="exp" type="text" autocomplete="exp">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label" for="cvc">Card CVC</label>
+              <div class="col-sm-3">
+                <input class="form-control" id="cvc" placeholder="123" data-stripe="cvc" type="text" autocomplete="off">
+              </div>
+              <label class="col-sm-3 control-label" for="amount">Amount</label>
+              <div class="col-sm-3">
+                <input class="form-control" id="amount" name="amount" value="5" type="number" autocomplete="amount">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-3 col-sm-9">
+                <button type="submit" class="btn btn-success form-control">Pay Now</button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <script>
+          Stripe.setPublishableKey('@Utils.confd.getString("zauberstuhl.stripe.publishableKey").getOrElse("not set")');
+        </script>
+        <script src="@routes.Assets.at("javascripts/stripe.js")"></script>
+      </div>
+      <div class="col-md-6">
         <h4>Direct to Bank Transfer</h4>
         <p>Please include the word "zauberstuhl" in the usage field of the transfer!</p>
         <div id="directBankTransfer" class="g-recaptcha g-recaptcha-center"
