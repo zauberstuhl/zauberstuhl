@@ -170,9 +170,6 @@ object Utils {
       Json.parse(request.postForm(data).asString.body)
     } else {
       Json.parse(request
-        // NOTE this fetches only statistic data nothing vital,
-        // but in future it should accept letsencrypt
-        .option(HttpOptions.allowUnsafeSSL)
         .timeout(connTimeoutMs = 5000,
           readTimeoutMs = 15000)
         .asString
