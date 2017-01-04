@@ -35,37 +35,40 @@ import objects.Database._
 object Stripe extends Controller {
   val provider = StripeProvider()
 
-  def oneTimePayment = Action.async(parse.urlFormEncoded) { request =>
-    val amount: Int = (request.body("amount").head).toInt
+  def oneTimePayment = Action.async(parse.urlFormEncoded) { request => try {
+    val webAmount: String = request.body("amount").head
     val token: String = request.body("stripeToken").head
+    val webCurrency: String = request.body("currency").head
+    val (currency: String, amount: Float) =
+      Utils.convertCurrencyAmount(webCurrency, webAmount)
+    // set private api key
     com.stripe.Stripe.apiKey = Utils.confd("stripe.apiKey")
 
-    try {
-      // Create a Customer
-      val customerParams = new HashMap[String, Object]()
-      customerParams.put("source", token)
-      //customerParams.put("description", comment)
-      val customer = Customer.create(customerParams)
+    // Create a Customer
+    val customerParams = new HashMap[String, Object]()
+    customerParams.put("source", token)
+    //customerParams.put("description", comment)
+    val customer = Customer.create(customerParams)
+    // Charge the Customer instead of the card
+    // use java integer since the java library requires it
+    val cents: java.lang.Integer = amount.toInt * 100
+    val chargeParams = new HashMap[String, Object]()
+    chargeParams.put("amount", cents)
+    chargeParams.put("currency", currency)
+    chargeParams.put("customer", customer.getId())
+    Charge.create(chargeParams)
 
-      // Charge the Customer instead of the card
-      val cents: java.lang.Integer = amount * 100
-      val chargeParams = new HashMap[String, Object]()
-      chargeParams.put("amount", cents)
-      chargeParams.put("currency", "eur")
-      chargeParams.put("customer", customer.getId())
-      Charge.create(chargeParams)
+    // safe into database
+    val donation = Donation(amount, currency, provider.name,
+      (System.currentTimeMillis / 1000).toInt)
+    DatabaseHelper.insert(donation)
 
-      // safe into database
-      val donation = Donation(amount.toFloat, "EUR",
-        provider.name, (System.currentTimeMillis / 1000).toInt)
-      DatabaseHelper.insert(donation)
-
-      Future(Ok(views.html.stripe(request, "zauberstuhl")))
-    } catch {
-      case e: StripeException => {
-        Logger.error(e.getMessage)
-        Future(BadRequest(e.getMessage))
-      }
+    Future(Ok(views.html.stripe(request, "zauberstuhl")))
+  } catch {
+    case e: Exception => {
+      Logger.error(e.getMessage)
+      Future(BadRequest(views.html.error(request,
+        "Something went wrong!", e.getMessage)))
     }
-  }
+  }}
 }

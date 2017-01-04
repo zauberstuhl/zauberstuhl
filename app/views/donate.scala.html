@@ -84,18 +84,12 @@
             </div>
             <div class="form-group">
               <label class="col-sm-3 control-label" for="exp">Expiration Date</label>
-              <div class="col-sm-9">
+              <div class="col-sm-3">
                 <input class="form-control" placeholder="MM / YY" id="exp" data-stripe="exp" type="text" autocomplete="exp">
               </div>
-            </div>
-            <div class="form-group">
               <label class="col-sm-3 control-label" for="cvc">Card CVC</label>
               <div class="col-sm-3">
                 <input class="form-control" id="cvc" placeholder="123" data-stripe="cvc" type="text" autocomplete="off">
-              </div>
-              <label class="col-sm-4 control-label" for="subscribe">Monthly subscription</label>
-              <div class="col-sm-1">
-                <input class="form-control" id="subscribe" name="subscribe" type="checkbox" autocomplete="subscribe">
               </div>
             </div>
             <div class="form-group">
@@ -103,12 +97,13 @@
               <div class="col-sm-3">
                 <input class="form-control" id="amount" name="amount" value="5" type="number" autocomplete="amount">
               </div>
-              <div class="col-sm-3">
-                <select class="form-control" id="currency" name="currency" autocomplete="currency">
+              <div class="col-sm-6">
+                <select class="form-control" id="currency" name="currency" data-stripe="currency" autocomplete="off">
+                  <option value="EUR" selected>&#128; Euro</option>
                   <option value="USD">&#36; US Dollar</option>
                   <option value="CAD">&#36; Canadian Dollar</option>
                   <option value="GBP">&#163; Pound</option>
-                  <option value="EUR" selected>&#128; Euro</option>
+                  <option value="custom">Custom Value</option>
                 </select>
               </div>
             </div>

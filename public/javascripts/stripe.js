@@ -17,6 +17,15 @@ $(function() {
   $('#exp').payment('formatCardExpiry');
   $('#cvc').payment('formatCardCVC');
 
+  // custom currency value
+  $('#currency').change(function() {
+    if ($(this).val() === 'custom') {
+      var currency = $('<input class="form-control" id="currency" name="currency" placeholder="EUR" data-stripe="currency" type="text">');
+      $(this).replaceWith(currency)
+    }
+    return true;
+  });
+
   var $form = $('#payment-form');
   $form.submit(function(event) {
     // Disable the submit button to prevent repeated clicks:
