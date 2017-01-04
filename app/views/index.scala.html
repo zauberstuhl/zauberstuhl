@@ -2,15 +2,12 @@
   request: RequestHeader,
   title: String,
   reasons: Map[String, Double],
-  donations: objects.Database.DonationList,
-  stats: play.api.libs.json.JsValue
+  donations: objects.Database.DonationList
 )
 
 @header(request, title)
 
 @projects()
-
-@statistics(stats)
 
 @donate(reasons, donations)
 

@@ -28,27 +28,15 @@ import objects.Database.Donation
 
 object Application extends Controller {
   def index = Action.async { implicit request =>
-    val sechatKey = "zauberstuhl.stats.sechat"
-    val jdKey = "zauberstuhl.stats.joindiaspora"
-
-    val sechatUrl = Utils.confd.getString(sechatKey).getOrElse("")
-    val jdUrl = Utils.confd.getString(jdKey).getOrElse("")
-    val expire = Utils.confd.getInt("zauberstuhl.cache.expire").getOrElse(3600)
-
     for {
       donationReasons <- Future { Utils.combinedExpenditures }
       donations <- Future { DatabaseHelper.selectAllFromThisYear }
-      statistics <- Future {
-        val sechatJson = Utils.fetch(sechatUrl, sechatKey, expire)
-        val jdJson = Utils.fetch(jdUrl, jdKey, expire)
-
-        Json.obj("sechat" -> sechatJson, "jd" -> jdJson)
-      }
-    } yield Ok(views.html.index(request,
+    } yield Ok(
+      views.html.index(request,
       "zauberstuhl",
       donationReasons,
-      donations,
-      statistics))
+      donations)
+    )
   }
 
   def recaptchaVerify = Action { implicit request =>
