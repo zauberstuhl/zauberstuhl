@@ -38,8 +38,7 @@ object Stripe extends Controller {
   def oneTimePayment = Action.async(parse.urlFormEncoded) { request =>
     val amount: Int = (request.body("amount").head).toInt
     val token: String = request.body("stripeToken").head
-    com.stripe.Stripe.apiKey = Utils.confd.getString(
-      "zauberstuhl.stripe.apiKey").getOrElse("not set")
+    com.stripe.Stripe.apiKey = Utils.confd("stripe.apiKey")
 
     try {
       // Create a Customer

@@ -36,8 +36,6 @@ class UpdateActor extends Actor {
   val SATOSHIBASE: Int = 10
   val SATOSHIEXPR: Int = -8
 
-  val confd = Play.current.configuration
-
   def receive = {
     case p: BlockChainProvider => this.blockChainProvider(p)
     case p: EmailProvider => this.emailProvider(p)
@@ -46,7 +44,7 @@ class UpdateActor extends Actor {
 
   private def blockChainProvider(provider: Provider) {
     Logger.info("[" + provider.name + "] Startup..")
-    val address = confd.getString("zauberstuhl.btc.address").get
+    val address = Utils.confd("btc.address")
     val json = Utils.fetch(
       Utils.BlockChainUrl + address + Utils.BlockChainParam
     )
@@ -97,12 +95,9 @@ class UpdateActor extends Actor {
     props.setProperty("mail.store.protocol", "imaps")
     val store = Session.getDefaultInstance(props).getStore("imaps")
     try {
-      store.connect(
-        confd.getString("zauberstuhl.mail.imap").get,
-        confd.getString("zauberstuhl.mail.address").get,
-        confd.getString("zauberstuhl.mail.password").get
-      )
-      val in = store.getFolder(confd.getString("zauberstuhl.mail.box").get)
+      store.connect(Utils.confd("mail.imap"),
+        Utils.confd("mail.address"), Utils.confd("mail.password"))
+      val in = store.getFolder(Utils.confd("mail.box"))
       in.open(Folder.READ_ONLY)
       val preTime: Int = DatabaseHelper.lastEntry(provider) match {
         case Some(entry) => entry.time

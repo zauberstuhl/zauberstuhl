@@ -22,9 +22,9 @@ import play.api.libs.json.{JsValue, JsUndefined}
 object Recaptcha {
   def validate(response: String): Boolean = {
     Logger.debug("Try validating reCaptcha response: " + response)
-    val res = Utils.fetch(Utils.confd.getString("zauberstuhl.recaptcha.url").get,
+    val res = Utils.fetch(Utils.confd("recaptcha.url"),
       data = Seq(
-        "secret" -> Utils.confd.getString("zauberstuhl.recaptcha.secret").get,
+        "secret" -> Utils.confd("recaptcha.secret"),
         "response" -> response
       )
     )

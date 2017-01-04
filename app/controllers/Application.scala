@@ -45,12 +45,8 @@ object Application extends Controller {
 
     if (valid) {
       Ok(JsObject(Seq(
-        "iban" -> JsString(
-          Utils.confd.getString("zauberstuhl.bank.iban").getOrElse("")
-        ),
-        "bic" -> JsString(
-          Utils.confd.getString("zauberstuhl.bank.bic").getOrElse("")
-        )
+        "iban" -> JsString(Utils.confd("bank.iban")),
+        "bic" -> JsString(Utils.confd("bank.bic"))
       )))
     } else {
       Unauthorized

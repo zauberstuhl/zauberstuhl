@@ -84,17 +84,13 @@
         <u>We'll receive a one dollar<br>commission on every purchase!</u></p>
       </div>
       <div class="col-md-2">
-        <button class="bitcoinate" data-size="30" data-address="@{
-            Utils.confd.getString("zauberstuhl.btc.address").getOrElse("not set")
-          }"><span></span>Donate BTC</button>
+        <button class="bitcoinate" data-size="30" data-address="@Utils.confd("btc.address")"><span></span>Donate BTC</button>
       </div>
       <div class="col-md-2">
         <form action="https://www.paypal.com/cgi-bin/webscr"
           method="post" target="_blank">
           <input type="hidden" name="cmd" value="_s-xclick">
-          <input type="hidden" name="hosted_button_id" value="@{
-            Utils.confd.getString("zauberstuhl.paypal.id").getOrElse("not set")
-          }">
+          <input type="hidden" name="hosted_button_id" value="@Utils.confd("paypal.id")">
           <input type="image" src="https://www.paypalobjects.com/en_US/DE/i/btn/btn_donateCC_LG.gif"
             border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
           <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
@@ -141,7 +137,7 @@
           </fieldset>
         </form>
         <script>
-          Stripe.setPublishableKey('@Utils.confd.getString("zauberstuhl.stripe.publishableKey").getOrElse("not set")');
+          Stripe.setPublishableKey('@Utils.confd("stripe.publishableKey")');
         </script>
         <script src="@routes.Assets.at("javascripts/stripe.js")"></script>
       </div>
@@ -149,9 +145,7 @@
         <h4>Direct to Bank Transfer</h4>
         <p>Please include the word "zauberstuhl" in the usage field of the transfer!</p>
         <div id="directBankTransfer" class="g-recaptcha g-recaptcha-center"
-          data-callback="reCaptchaCallback" data-sitekey="@{
-            Utils.confd.getString("zauberstuhl.recaptcha.client").getOrElse("not set")
-          }">
+          data-callback="reCaptchaCallback" data-sitekey="@Utils.confd("recaptcha.client")">
         </div>
       </div>
     </div>

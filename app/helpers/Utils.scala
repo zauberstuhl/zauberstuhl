@@ -34,8 +34,10 @@ import util.control.Breaks
 
 import objects.Database.{Donation, DonationList}
 
+case class PlayConfigurationException(err: String) extends Exception
+
 object Utils {
-  val confd = Play.current.configuration
+  val cfg = Play.current.configuration
 
   val MaxWidth = 100
   val DefaultBtcPrice = 250
@@ -44,6 +46,17 @@ object Utils {
   val BlockChainParam = "?filter=2&format=json" // 1 = sent; 2 = received
 
   val EmptyJson = "{}" // default e.g. while fetching from url
+
+  def confd(k: String): String = {
+    val prefix = """^zauberstuhl\..*""".r
+    val key: String = k match {
+      case prefix() => k
+      case _ => "zauberstuhl." + k
+    }
+    cfg.getString(key).getOrElse {
+      throw new PlayConfigurationException(k + ": not found")
+    }
+  }
 
   def buildDonationStatusInJson: String = "{\"maxWidth\":" +
     MaxWidth + ",\"width\":" +
@@ -57,7 +70,7 @@ object Utils {
     .replaceAll(">", "&gt;")
 
   def lastBtcPrice: Int = {
-    val json = fetch(confd.getString("zauberstuhl.btc.url").get, "zauberstuhl.btc.conversion")
+    val json = fetch(confd("btc.url"), "zauberstuhl.btc.conversion")
     (json \ "EUR" \ "last") match {
       case price: JsValue => price.as[Int]
       case default => {
@@ -112,11 +125,11 @@ object Utils {
       maxWidth
     }
 
-  def readExpenditureValues: List[Double] = Utils.confd
+  def readExpenditureValues: List[Double] = cfg
     .getDoubleList("zauberstuhl.expenditures.values")
     .get.asScala.toList.map(a => a.toDouble)
 
-  def readExpenditureReasons: List[String] = Utils.confd
+  def readExpenditureReasons: List[String] = cfg
     .getStringList("zauberstuhl.expenditures.reasons")
     .get.asScala.toList
 
