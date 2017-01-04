@@ -1,13 +1,14 @@
 @(
   request: RequestHeader,
   title: String,
+  projectList: objects.Database.ProjectList,
   reasons: Map[String, Double],
   donations: objects.Database.DonationList
 )
 
 @header(request, title)
 
-@projects()
+@projects(projectList)
 
 @donate(reasons, donations)
 

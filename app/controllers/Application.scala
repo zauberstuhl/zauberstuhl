@@ -29,11 +29,13 @@ import objects.Database.Donation
 object Application extends Controller {
   def index = Action.async { implicit request =>
     for {
+      projects <- Future { DatabaseHelper.selectAllProjects }
       donationReasons <- Future { Utils.combinedExpenditures }
       donations <- Future { DatabaseHelper.selectAllFromThisYear }
     } yield Ok(
       views.html.index(request,
       "zauberstuhl",
+      projects,
       donationReasons,
       donations)
     )

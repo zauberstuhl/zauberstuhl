@@ -17,6 +17,10 @@
 package objects
 
 object Database {
+  case class Project(title: String, body: String)
+
+  case class ProjectList(list: List[Project])
+
   case class Donation(received: Double, currency: String, provider: String, time: Int) {
     require(received >= 0, "received cannot be negative")
     require(provider != null, "provider cannot be null")

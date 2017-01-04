@@ -23,7 +23,7 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser.get
 
-import objects.Database.{DonationList, Donation}
+import objects.Database._
 import objects.Provider.Provider
 
 object DatabaseHelper {
@@ -34,6 +34,13 @@ object DatabaseHelper {
     get[Int]("time") map {
       case received~currency~provider~time =>
         Donation(received, currency, provider, time)
+    }
+  }
+
+  val projects = {
+    get[String]("title") ~
+    get[String]("body") map {
+      case title~body => Project(title, body)
     }
   }
 
@@ -58,6 +65,15 @@ object DatabaseHelper {
         from donations
         where strftime('%Y', time, 'unixepoch') >= "2016";""")
       .as(donations *)
+    )
+  }
+
+  def selectAllProjects: ProjectList = DB.withConnection { implicit c =>
+    new ProjectList(
+      SQL("""select title, body
+        from projects
+        order by id asc""")
+      .as(projects *)
     )
   }
 
