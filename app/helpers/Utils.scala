@@ -34,6 +34,7 @@ import util.control.Breaks
 
 import objects.Database.{Donation, DonationList}
 
+case class CurrencyAPIException(err: String) extends Exception
 case class PlayConfigurationException(err: String) extends Exception
 
 object Utils {
@@ -168,14 +169,41 @@ object Utils {
     }
   }
 
-  def convertCurrencyAmount(currency: String, amount: String): (String, Float) =
-    (currency
-      .toUpperCase()
-      .take(3)
-    ,amount
+  def convertCurrencyAmount(currency: String, amount: String): (String, Float) = try {
+    val convert = currency.toUpperCase().take(3)
+    val convertTo = confd("currency.convertTo");
+    val amountToFloat = amount
       .replace("[^0-9,.]","")
       .replace(",",".")
-      .toFloat)
+      .toFloat
+
+    if (convert == convertTo) {
+      (convert, amountToFloat)
+    } else {
+      val endpoint = confd("currency.endpoint")
+        .replaceFirst("\\{1\\}", convert)
+        .replaceFirst("\\{2\\}", convertTo)
+      val result: JsValue = fetch(endpoint)
+
+      val rate: Float = (result \ "rates" \ convertTo) match {
+        case rate: JsValue => rate.as[Float]
+        case _ => throw new CurrencyAPIException("wasn't able to fetch from API")
+      }
+
+      (convertTo, (amountToFloat * rate))
+    }
+  } catch {
+    case e: Exception => {
+      Logger.error("convertCurrencyAmount: " + e.getMessage)
+      (currency
+        .toUpperCase()
+        .take(3),
+      amount
+        .replace("[^0-9,.]","")
+        .replace(",",".")
+        .toFloat)
+    }
+  }
 
   private def fetch(url: String, data: Seq[(String, String)]): JsValue = try {
     val request: HttpRequest = Http(url)

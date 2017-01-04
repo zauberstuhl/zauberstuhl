@@ -63,9 +63,9 @@ logger.application=DEBUG
 # Custom configuration parameters
 # ~~~~~
 #
-# diaspora statistic url
-zauberstuhl.stats.sechat = "https://sechat.org/statistics.json"
-zauberstuhl.stats.joindiaspora = "https://joindiaspora.com/statistics.json"
+## Currency API
+zauberstuhl.currency.convertTo = "EUR"
+zauberstuhl.currency.endpoint = "http://api.fixer.io/latest?base={1}&symbols={2}"
 # cache statistic request for X seconds
 zauberstuhl.cache.expire= 3600
 # btc conversion to EUR

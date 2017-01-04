@@ -51,7 +51,7 @@ object Stripe extends Controller {
     val customer = Customer.create(customerParams)
     // Charge the Customer instead of the card
     // use java integer since the java library requires it
-    val cents: java.lang.Integer = amount.toInt * 100
+    val cents: java.lang.Integer = (amount * 100F).toInt
     val chargeParams = new HashMap[String, Object]()
     chargeParams.put("amount", cents)
     chargeParams.put("currency", currency)
@@ -66,7 +66,7 @@ object Stripe extends Controller {
     Future(Ok(views.html.stripe(request, "zauberstuhl")))
   } catch {
     case e: Exception => {
-      Logger.error(e.getMessage)
+      Logger.error("oneTimePayment: " + e.getMessage)
       Future(BadRequest(views.html.error(request,
         "Something went wrong!", e.getMessage)))
     }
