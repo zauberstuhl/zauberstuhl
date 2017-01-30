@@ -134,12 +134,14 @@ class UpdateActor extends Actor {
   private def fromIsValid(msg: Message): Boolean = {
     val paypal = "@paypal.de"
     val spreadshirt = "@spreadshirt.net"
+    val sparkasse = "@kontowecker.de"
     // custom will allow the further process of draft emails
     val custom = "@zauberstuhl.de"
     val from: String = msg.getFrom.mkString(",")
     from match {
       case str if str contains paypal => true
       case str if str contains spreadshirt => true
+      case str if str contains sparkasse => true
       case str if str contains custom => true
       case _ => false
     }
