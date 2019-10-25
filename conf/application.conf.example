@@ -5,7 +5,7 @@
 # ~~~~~
 # The secret key is used to secure cryptographics functions.
 # If you deploy your application to several instances be sure to use the same key!
-application.secret="UHmbr]puPP0rM3D4K>rjBUeEUpO3cMJ6J]E_PnWG]jgpFcCEiOZX[fvI/PEacget"
+#application.secret="UHmbr]puPP0rM3D4K>rjBUeEUpO3cMJ6J]E_PnWG]jgpFcCEiOZX[fvI/PEacget"
 
 # The application languages
 # ~~~~~
